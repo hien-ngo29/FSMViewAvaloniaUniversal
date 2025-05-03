@@ -28,10 +28,10 @@ jobs:
       run: msbuild FSMExpress.sln /restore /p:Configuration=Release
     
     - name: Remove unused platforms
-      run: Get-ChildItem -Path "FSMExpress.Desktop\bin\Release\net8.0\runtimes" -Directory | Where-Object { $_.Name -notin @("win-x64", "win7-x64", "win") } | Remove-Item -Recurse -Force
+      run: Get-ChildItem -Path "FSMExpress\bin\Release\net8.0\runtimes" -Directory | Where-Object { $_.Name -notin @("win-x64", "win7-x64", "win") } | Remove-Item -Recurse -Force
       
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: uabea-windows
-        path: FSMExpress.Desktop/bin/Release/net8.0
+        path: FSMExpress/bin/Release/net8.0
