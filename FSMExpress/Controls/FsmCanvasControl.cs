@@ -83,7 +83,18 @@ public class FsmCanvasControl : Grid
 
     private void MouseScrollCanvas(object? sender, PointerWheelEventArgs e)
     {
-        // todo
+        var scale = 1 + (e.Delta.Y / 10);
+
+        var halfWidth = _can.Bounds.Width / 2;
+        var halfHeight = _can.Bounds.Height / 2;
+
+        var curPos = e.GetPosition(this);
+        var zoomX = curPos.X - halfWidth;
+        var zoomY = curPos.Y - halfHeight;
+
+        _mt.Matrix *= Matrix.CreateTranslation(-zoomX, -zoomY);
+        _mt.Matrix *= Matrix.CreateScale(scale, scale);
+        _mt.Matrix *= Matrix.CreateTranslation(zoomX, zoomY);
     }
 
     private void RebuildGraph()
