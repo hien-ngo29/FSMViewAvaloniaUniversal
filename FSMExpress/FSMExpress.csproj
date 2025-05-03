@@ -50,4 +50,18 @@
       <DependentUpon>FsmSelectorView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <Target Name="FSMExpressAfterBuild" AfterTargets="AfterBuild" Condition="'$(SolutionDir)' != '*Undefined*'">
+    <ItemGroup>
+      <ReleaseFiles Include="$(SolutionDir)ReleaseFiles\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ReleaseFiles)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
+  </Target>
+
+  <Target Name="FSMExpressAfterPublish" AfterTargets="Publish" Condition="'$(SolutionDir)' != '*Undefined*'">
+    <ItemGroup>
+      <ReleaseFiles Include="$(SolutionDir)ReleaseFiles\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ReleaseFiles)" DestinationFolder="$(PublishDir)" ContinueOnError="true" />
+  </Target>
 </Project>
