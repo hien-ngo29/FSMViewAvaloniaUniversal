@@ -1,10 +1,14 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using System;
 using System.Threading.Tasks;
 
 namespace FSMExpress.Services;
 public class DialogService(Window mainWindow, ViewLocator viewLocator) : IDialogService
 {
+    private readonly WindowIcon _winIcon = new(new Bitmap(AssetLoader.Open(new Uri("avares://FSMExpress/Assets/icon.png"))));
+
     public async Task ShowDialog(IDialogAware viewModel)
     {
         var window = CreateWindow(viewModel);
@@ -14,6 +18,7 @@ public class DialogService(Window mainWindow, ViewLocator viewLocator) : IDialog
     public async Task<TResult?> ShowDialog<TResult>(IDialogAware<TResult> viewModel)
     {
         var window = CreateWindow(viewModel);
+        window.Icon = _winIcon;
 
         void eventHandler(TResult? result) => window.Close(result);
 
