@@ -27,9 +27,6 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-    - name: Fix libonigwrap directory
-      run: cp FSMExpress/bin/Release/net8.0/runtimes/linux/native/libonigwrap.so FSMExpress/bin/Release/net8.0/runtimes/linux-x64/native/libonigwrap.so
-
     - name: Remove unused platforms
       run: find FSMExpress/bin/Release/net8.0/runtimes/* -maxdepth 0 ! -name linux-x64 -type d -exec rm -r {} +
       
