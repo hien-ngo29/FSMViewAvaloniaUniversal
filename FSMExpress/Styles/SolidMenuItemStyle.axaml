@@ -1,0 +1,25 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Padding="50">
+      <Menu Grid.Row="0">
+        <MenuItem Header="File">
+          <MenuItem Header="Open" />
+          <MenuItem Header="Open scene list" />
+          <MenuItem Header="Open resources.assets" />
+          <MenuItem Header="Open last" IsEnabled="False" />
+        </MenuItem>
+        <MenuItem Header="Game config">
+          <MenuItem Header="Set game path" />
+        </MenuItem>
+        <MenuItem Header="Close tab"></MenuItem>
+        <MenuItem Header="Close all tabs"></MenuItem>
+      </Menu>
+    </Border>
+  </Design.PreviewWith>
+
+  <Style Selector="MenuItem:selected /template/ Border#root">
+    <Setter Property="Background" Value="{DynamicResource ThemeAccentBrush3}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentBrush3}" />
+  </Style>
+</Styles>
