@@ -1,7 +1,7 @@
 ﻿using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmLayoutOption
+public class FsmLayoutOption : NamedVariable
 {
     public LayoutOptionType Option;
     public FsmFloat? FloatParam;
@@ -13,7 +13,7 @@ public class FsmLayoutOption
         FloatParam = new FsmFloat();
     }
 
-    public FsmLayoutOption(IAssetField field)
+    public FsmLayoutOption(IAssetField field) : base(field)
     {
         Option = field.GetValue<LayoutOptionType>("option");
         switch (Option)

@@ -1,7 +1,7 @@
 ﻿using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmAnimationCurve : NamedVariable
+public class FsmAnimationCurve
 {
     public AnimationCurve Value { get; set; }
 
@@ -10,7 +10,7 @@ public class FsmAnimationCurve : NamedVariable
         Value = new AnimationCurve();
     }
 
-    public FsmAnimationCurve(IAssetField field) : base(field)
+    public FsmAnimationCurve(IAssetField field)
     {
         Value = new AnimationCurve(field.GetField("value"));
     }
