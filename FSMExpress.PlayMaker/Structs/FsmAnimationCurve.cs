@@ -3,16 +3,16 @@
 namespace FSMExpress.PlayMaker.Structs;
 public class FsmAnimationCurve
 {
-    public AnimationCurve Value { get; set; }
+    public AnimationCurve Curve { get; set; }
 
     public FsmAnimationCurve()
     {
-        Value = new AnimationCurve();
+        Curve = new AnimationCurve();
     }
 
     public FsmAnimationCurve(IAssetField field)
     {
-        Value = new AnimationCurve(field.GetField("value"));
+        Curve = new AnimationCurve(field.GetField("curve"));
     }
 }
 
