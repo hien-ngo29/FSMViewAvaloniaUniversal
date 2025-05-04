@@ -33,5 +33,5 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: uabea-windows
+        name: fsmexpress-windows
         path: FSMExpress/bin/Release/net8.0

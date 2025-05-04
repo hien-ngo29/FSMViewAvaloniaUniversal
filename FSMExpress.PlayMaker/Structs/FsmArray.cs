@@ -29,7 +29,7 @@ public class FsmArray : NamedVariable
     {
         VarType = field.GetValue<VariableType>("type");
         ObjectTypeName = field.GetValue<string>("objectTypeName");
-        FloatValues = field.GetValue<List<float>>("floatValue");
+        FloatValues = field.GetValue<List<float>>("floatValues");
         IntValues = field.GetValue<List<int>>("intValues");
         BoolValues = field.GetValue<List<bool>>("boolValues");
         StringValues = field.GetValue<List<string>>("stringValues");
