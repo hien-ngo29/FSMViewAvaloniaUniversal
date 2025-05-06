@@ -14,6 +14,11 @@ public class FsmQuaternion : NamedVariable
     {
         Value = new Quaternion(field.GetField("value"));
     }
+
+    public override string ToString()
+    {
+        return $"[X = {Value.X}, Y = {Value.Y}, Z = {Value.Z}, W = {Value.W}]";
+    }
 }
 
 public class Quaternion
@@ -37,5 +42,10 @@ public class Quaternion
         Y = field.GetValue<float>("y");
         Z = field.GetValue<float>("z");
         W = field.GetValue<float>("w");
+    }
+
+    public override string ToString()
+    {
+        return $"[X = {X}, Y = {Y}, Z = {Z}, W = {W}]";
     }
 }

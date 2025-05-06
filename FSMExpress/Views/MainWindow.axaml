@@ -1,7 +1,9 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:FSMExpress.ViewModels"
-        xmlns:ctrl="using:FSMExpress.Controls"
+        xmlns:can="using:FSMExpress.Controls.FsmCanvas"
+        xmlns:sid="using:FSMExpress.Controls.Sidebar"
+        xmlns:fcd="using:FSMExpress.Common.Document"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -13,6 +15,63 @@
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
+  
+  <Window.Resources>
+    <sid:TypeColorConverter x:Key="TypeColorConverter"/>
+  </Window.Resources>
+
+  <!-- this all needs to move with the ItemsControl sidebar -->
+  <Window.DataTemplates>
+    <DataTemplate DataType="{x:Type fcd:FsmDocumentNodeClassField}">
+      <TextBlock
+        Text="{Binding TypeRef.ClassName}"
+        Background="{StaticResource ThemeControlLowBrush}"
+        HorizontalAlignment="Stretch"
+        FontWeight="Bold"
+        Padding="5"
+        Height="28" />
+    </DataTemplate>
+    <!-- SelectableTextBlock must have Background for hit testing -->
+    <DataTemplate DataType="{x:Type fcd:FsmDocumentNodeDataField}">
+      <Grid ColumnDefinitions="4*,5*">
+        <SelectableTextBlock
+          HorizontalAlignment="Stretch"
+          Background="{DynamicResource ThemeBackgroundBrush}"
+          Padding="5" Height="28"
+          Grid.Column="0">
+          <Run Text="{Binding Value.DisplayType}"
+            FontWeight="Bold">
+            <Run.Foreground>
+              <MultiBinding Converter="{StaticResource TypeColorConverter}" ConverterParameter="Type">
+                <Binding Path="Value.FieldKind" />
+                <DynamicResource ResourceKey="TypeTextTheme" />
+              </MultiBinding>
+            </Run.Foreground>
+          </Run>
+          <Run Text="{Binding Key}"
+            FontWeight="Bold" />
+        </SelectableTextBlock>
+        <Border
+          BorderBrush="{StaticResource ThemeBorderMidBrush}"
+          BorderThickness="1"
+          Grid.Column="1" Height="28">
+          <SelectableTextBlock
+            HorizontalAlignment="Stretch"
+            Background="{DynamicResource ThemeBackgroundBrush}"
+            Padding="5">
+            <Run Text="{Binding Value.DisplayString}">
+              <Run.Foreground>
+                <MultiBinding Converter="{StaticResource TypeColorConverter}" ConverterParameter="Value">
+                  <Binding Path="Value.FieldKind" />
+                  <DynamicResource ResourceKey="TypeTextTheme" />
+                </MultiBinding>
+              </Run.Foreground>
+            </Run>
+          </SelectableTextBlock>
+        </Border>
+      </Grid>
+    </DataTemplate>
+  </Window.DataTemplates>
   
   <Grid RowDefinitions="21,*">
     <Menu Grid.Row="0">
@@ -28,21 +87,16 @@
       <!--<MenuItem Header="Close tab"></MenuItem>
       <MenuItem Header="Close all tabs"></MenuItem>-->
     </Menu>
-    <Grid Grid.Row="1">
-      <ctrl:FsmCanvasControl Document="{Binding ActiveDocument}" />
-      <!--<Button>button test</Button>
-      <Canvas>
-      </Canvas>-->
-      <!--<SelectableTextBlock>
-        <Span Foreground="#4ec9b0">
-          float
-        </Span> <Span Foreground="#ffffff">
-          Velocity
-        </Span><LineBreak/>
-        <Span Foreground="#ffffff">
-          This is a test of <Bold>formatted</Bold> text.
-        </Span>
-      </SelectableTextBlock>-->
+    <Grid Grid.Row="1" ColumnDefinitions="*,4,300">
+      <can:FsmCanvasControl
+        Document="{Binding ActiveDocument}"
+        SelectedNode="{Binding SelectedNode, Mode=TwoWay}"
+        Grid.Column="0" />
+      <GridSplitter Grid.Column="1" />
+      <!-- todo: move to own control -->
+      <ScrollViewer Grid.Column="2">
+        <ItemsControl ItemsSource="{Binding SelectedNode.Fields}" />
+      </ScrollViewer>
     </Grid>
   </Grid>
 </Window>

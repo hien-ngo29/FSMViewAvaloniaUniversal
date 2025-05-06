@@ -19,6 +19,13 @@ public class FsmOwnerDefault
             ? new FsmGameObject(field.GetField("gameObject"))
             : null;
     }
+
+    public override string ToString()
+    {
+        return OwnerOption == OwnerDefaultOption.UseOwner
+            ? "[UseOwner]"
+            : GameObject?.ToString() ?? string.Empty;
+    }
 }
 
 public enum OwnerDefaultOption

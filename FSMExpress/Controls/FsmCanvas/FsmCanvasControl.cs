@@ -1,10 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using FSMExpress.Common.Document;
 
-namespace FSMExpress.Controls;
+namespace FSMExpress.Controls.FsmCanvas;
 public class FsmCanvasControl : Grid
 {
     private static readonly Color BG_LIGHT_THEME_COLOR = Color.FromRgb(140, 140, 140);
@@ -19,9 +20,12 @@ public class FsmCanvasControl : Grid
     private bool _beingDragged = false;
 
     private FsmDocument? _document;
+    private FsmDocumentNode? _selectedNode;
 
     public static readonly DirectProperty<FsmCanvasControl, FsmDocument?> DocumentProperty =
         AvaloniaProperty.RegisterDirect<FsmCanvasControl, FsmDocument?>(nameof(Document), o => o.Document, (o, v) => o.Document = v);
+    public static readonly DirectProperty<FsmCanvasControl, FsmDocumentNode?> SelectedNodeProperty =
+        AvaloniaProperty.RegisterDirect<FsmCanvasControl, FsmDocumentNode?>(nameof(SelectedNode), o => o.SelectedNode, (o, v) => o.SelectedNode = v);
 
     public FsmDocument? Document
     {
@@ -30,6 +34,21 @@ public class FsmCanvasControl : Grid
         {
             SetAndRaise(DocumentProperty, ref _document, value);
             RebuildGraph();
+        }
+    }
+
+    public FsmDocumentNode? SelectedNode
+    {
+        get => _selectedNode;
+        set
+        {
+            if (_selectedNode is not null)
+                _selectedNode.IsSelected = false;
+
+            SetAndRaise(SelectedNodeProperty, ref _selectedNode, value);
+
+            if (_selectedNode is not null)
+                _selectedNode.IsSelected = true;
         }
     }
 
@@ -54,12 +73,17 @@ public class FsmCanvasControl : Grid
 
     private void MouseDownCanvas(object? sender, PointerPressedEventArgs e)
     {
-        if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
-            return;
-
-        _lastPosition = e.GetPosition(this);
-        _beingDragged = true;
-        Cursor = new Cursor(StandardCursorType.Hand);
+        var clickProps = e.GetCurrentPoint(this).Properties;
+        if (clickProps.IsLeftButtonPressed)
+        {
+            SelectedNode = null;
+        }
+        else if (clickProps.IsRightButtonPressed)
+        {
+            _lastPosition = e.GetPosition(this);
+            _beingDragged = true;
+            Cursor = new Cursor(StandardCursorType.Hand);
+        }
     }
 
     private void MouseUpCanvas(object? sender, PointerReleasedEventArgs e)
@@ -83,7 +107,7 @@ public class FsmCanvasControl : Grid
 
     private void MouseScrollCanvas(object? sender, PointerWheelEventArgs e)
     {
-        var scale = 1 + (e.Delta.Y / 10);
+        var scale = 1 + e.Delta.Y / 10;
 
         var halfWidth = _can.Bounds.Width / 2;
         var halfHeight = _can.Bounds.Height / 2;
@@ -103,13 +127,13 @@ public class FsmCanvasControl : Grid
         if (Document is null)
             return;
 
+        var globalTransBrush = new SolidColorBrush(WHITE_GRAY_COLOR);
         foreach (var node in Document.Nodes)
         {
             var bounds = node.Bounds;
             var nodeBrush = new SolidColorBrush(node.IsStart ? Colors.Gold : BLACK_SOFT_COLOR);
             var titleBrush = new SolidColorBrush(node.IsGlobal ? BLACK_GRAY_COLOR : DrawingToAvaloniaColor(node.NodeColor));
             var transBrush = new SolidColorBrush(DrawingToAvaloniaColor(node.TransitionColor));
-            var globalTransBrush = new SolidColorBrush(WHITE_GRAY_COLOR);
 
             var stackPanel = new StackPanel();
 
@@ -126,7 +150,7 @@ public class FsmCanvasControl : Grid
 
             if (!node.IsGlobal)
             {
-                // this is yucky. maybe we should calculate it from the control itself?
+                // todo: this is yucky. maybe we should calculate it from the control itself?
                 float ypos = 27f;
 
                 foreach (var transition in node.Transitions)
@@ -175,6 +199,8 @@ public class FsmCanvasControl : Grid
             innerBorderGrid.Children.Add(innerBorder);
             innerBorderGrid.Children.Add(stackPanel);
 
+            var nodeInf = new FsmCanvasNodeInfo(node, nodeBrush);
+            // todo: this border should just be its own component
             var border = new Border()
             {
                 Child = innerBorderGrid,
@@ -183,7 +209,27 @@ public class FsmCanvasControl : Grid
                 BorderThickness = new Thickness(2),
                 CornerRadius = new CornerRadius(10),
                 Padding = new Thickness(0),
-                Width = node.Bounds.Width,
+                Width = node.Bounds.Width
+            };
+
+            var borderConverter = new FsmCanvasDocNodeBorderConverter(nodeInf);
+            var selectedBinding = new Binding
+            {
+                Source = node,
+                Path = nameof(node.IsSelected),
+                Converter = borderConverter
+            };
+            border.Bind(Border.BackgroundProperty, selectedBinding);
+            border.Bind(Border.BorderBrushProperty, selectedBinding);
+            border.PointerPressed += (sender, e) =>
+            {
+                if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                    return;
+
+                SelectedNode = nodeInf.Node;
+
+                // prevent click through
+                e.Handled = true;
             };
 
             Canvas.SetLeft(border, bounds.X);

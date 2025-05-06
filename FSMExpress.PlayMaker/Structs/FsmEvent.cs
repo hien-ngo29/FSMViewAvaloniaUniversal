@@ -20,4 +20,9 @@ public class FsmEvent
         IsSystemEvent = field.GetValue<bool>("isSystemEvent");
         IsGlobal = field.GetValue<bool>("isGlobal");
     }
+
+    public override string ToString()
+    {
+        return $"[Name = {Name}, IsSystemEvent = {IsSystemEvent}, IsGlobal = {IsGlobal}]";
+    }
 }

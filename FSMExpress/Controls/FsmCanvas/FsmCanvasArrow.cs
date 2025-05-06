@@ -1,24 +1,23 @@
 ﻿using Avalonia;
-using Avalonia.Input;
 using Avalonia.Media;
 using FSMExpress.Common.Document;
 using System;
 using AvaloniaPath = Avalonia.Controls.Shapes.Path;
 
-namespace FSMExpress.Controls;
+namespace FSMExpress.Controls.FsmCanvas;
 public static class FsmCanvasArrow
 {
     private static Point ComputeLocation(FsmDocumentNode node1, FsmDocumentNode node2, float yPos, out bool isLeft)
     {
         var nodetfm1 = node1.Bounds;
         var nodetfm2 = node2.Bounds;
-        var midx1 = nodetfm1.X + (nodetfm1.Width / 2);
-        var midx2 = nodetfm2.X + (nodetfm2.Width / 2);
-        var midy1 = nodetfm1.Y + (nodetfm1.Height / 2);
-        var midy2 = nodetfm2.Y + (nodetfm2.Height / 2);
+        var midx1 = nodetfm1.X + nodetfm1.Width / 2;
+        var midx2 = nodetfm2.X + nodetfm2.Width / 2;
+        var midy1 = nodetfm1.Y + nodetfm1.Height / 2;
+        var midy2 = nodetfm2.Y + nodetfm2.Height / 2;
 
         var loc = new Point(
-            nodetfm1.X + (nodetfm1.Width / 2),
+            nodetfm1.X + nodetfm1.Width / 2,
             nodetfm1.Y + yPos
         );
 
@@ -30,8 +29,8 @@ public static class FsmCanvasArrow
             isLeft = midx1 > midx2;
 
         loc = isLeft
-            ? new Point(loc.X + (nodetfm1.Width / 2), loc.Y)
-            : new Point(loc.X - (nodetfm1.Width / 2), loc.Y);
+            ? new Point(loc.X + nodetfm1.Width / 2, loc.Y)
+            : new Point(loc.X - nodetfm1.Width / 2, loc.Y);
 
         return loc;
     }
@@ -103,11 +102,11 @@ public static class FsmCanvasArrow
 
             // more padding on left direction due to border
             var newStartX = isLeftStart ? start.X : start.X;
-            var newEndX = isLeftEnd ? (end.X + 3) : (end.X - 3);
+            var newEndX = isLeftEnd ? end.X + 3 : end.X - 3;
             start = new Point(newStartX, start.Y);
             end = new Point(newEndX, end.Y);
 
-            double dist = (isLeftStart == isLeftEnd) ? 50 : 40;
+            double dist = isLeftStart == isLeftEnd ? 50 : 40;
             startMiddle = !isLeftStart ? new Point(start.X - dist, start.Y) : new Point(start.X + dist, start.Y);
             endMiddle = !isLeftEnd ? new Point(end.X - dist, end.Y) : new Point(end.X + dist, end.Y);
 
@@ -116,11 +115,11 @@ public static class FsmCanvasArrow
         else
         {
             start = new Point(
-                startNode.Bounds.X + (startNode.Bounds.Width / 2),
+                startNode.Bounds.X + startNode.Bounds.Width / 2,
                 startNode.Bounds.Y + startNode.Bounds.Height
             );
             end = new Point(
-                endNode.Bounds.X + (endNode.Bounds.Width / 2),
+                endNode.Bounds.X + endNode.Bounds.Width / 2,
                 endNode.Bounds.Y
             );
             startMiddle = new Point(start.X, start.Y + 1);
@@ -130,12 +129,12 @@ public static class FsmCanvasArrow
         }
 
         var line = CreateLine(start, startMiddle, endMiddle, end, arrowDir, brush);
-        line.PointerMoved += (object? sender, PointerEventArgs e) =>
+        line.PointerMoved += (sender, e) =>
         {
             line.Stroke = Brushes.Black;
             line.ZIndex = 1;
         };
-        line.PointerExited += (object? sender, PointerEventArgs e) =>
+        line.PointerExited += (sender, e) =>
         {
             line.Stroke = brush;
             line.ZIndex = -1;

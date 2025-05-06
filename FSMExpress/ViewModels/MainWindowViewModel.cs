@@ -13,10 +13,13 @@ namespace FSMExpress.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private AssetsManager _manager = new();
+    private readonly AssetsManager _manager = new();
 
     [ObservableProperty]
     private FsmDocument? _activeDocument = null;
+
+    [ObservableProperty]
+    public FsmDocumentNode? _selectedNode = null;
 
     public MainWindowViewModel()
     {

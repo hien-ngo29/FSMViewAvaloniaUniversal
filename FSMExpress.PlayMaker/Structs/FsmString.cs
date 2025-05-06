@@ -14,4 +14,9 @@ public class FsmString : NamedVariable
     {
         Value = field.GetValue<string>("value");
     }
+
+    public override string ToString()
+    {
+        return $"\"{Value}\"";
+    }
 }

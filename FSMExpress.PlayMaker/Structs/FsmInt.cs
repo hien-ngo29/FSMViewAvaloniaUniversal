@@ -14,4 +14,9 @@ public class FsmInt : NamedVariable
     {
         Value = field.GetValue<int>("value");
     }
+
+    public override string ToString()
+    {
+        return Value.ToString();
+    }
 }

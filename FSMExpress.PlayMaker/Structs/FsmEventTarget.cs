@@ -30,4 +30,9 @@ public class FsmEventTarget
         SendToChildren = new FsmBool(field.GetField("sendToChildren"));
         FsmComponent = field.GetValue<NamedAssetPPtr>("fsmComponent");
     }
+
+    public override string ToString()
+    {
+        return $"[Target = {Target}, ExcludeSelf = {ExcludeSelf}, GameObject = {GameObject}, FsmName = {FsmName}, SendToChildren = {SendToChildren}, FsmComponent = {FsmComponent}]";
+    }
 }

@@ -185,11 +185,10 @@ public class AfAssetField(AssetTypeValueField valueField, AfAssetNamer namer) : 
         }
         else if (genericType == typeof(byte))
         {
-            var list = new List<byte>(field.Children.Count);
-            foreach (var child in field)
-                list.Add(child.AsByte);
-
-            return (T)(object)list;
+            // https://github.com/nesrak1/AssetsTools.NET/blob/a73a399cee3fedadcfa3c1861e6192414ad588fb/AssetTools.NET/Extra/MonoDeserializer/CommonMonoTemplateHelper.cs#L213
+            // it appears mono deserializers automatically turn arrays of bytes
+            // into ByteArray typed fields, so we have to use .AsByteArray here.
+            return (T)(object)field.AsByteArray.ToList();
         }
         else if (genericType == typeof(uint))
         {

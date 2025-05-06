@@ -14,4 +14,9 @@ public class FsmBool : NamedVariable
     {
         Value = field.GetValue<bool>("value");
     }
+
+    public override string ToString()
+    {
+        return Value.ToString().ToLowerInvariant();
+    }
 }

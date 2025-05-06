@@ -11,6 +11,7 @@
   
     <Application.Styles>
       <SimpleTheme />
-      <StyleInclude Source="/Styles/SolidMenuItemStyle.axaml" />
+      <StyleInclude Source="/Theming/SolidMenuItemStyle.axaml" />
+      <StyleInclude Source="/Theming/CodeColors.axaml" />
     </Application.Styles>
 </Application>

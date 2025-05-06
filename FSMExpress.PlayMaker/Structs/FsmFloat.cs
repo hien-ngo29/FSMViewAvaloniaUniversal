@@ -14,4 +14,9 @@ public class FsmFloat : NamedVariable
     {
         Value = field.GetValue<float>("value");
     }
+
+    public override string ToString()
+    {
+        return Value.ToString() + "f";
+    }
 }

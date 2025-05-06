@@ -33,7 +33,7 @@ public class FsmActionData
     public List<FsmRect> FsmRectParams { get; set; }
     public List<FsmQuaternion> FsmQuaternionParams { get; set; }
     public List<string> StringParams { get; set; }
-    public List<byte> ByteData { get; set; }
+    public byte[] ByteData { get; set; }
     public List<int> ArrayParamSizes { get; set; }
     public List<string> ArrayParamTypes { get; set; }
     public List<int> CustomTypeSizes { get; set; }
@@ -91,7 +91,7 @@ public class FsmActionData
         CustomNames = field.GetValue<List<string>>("customNames");
         ActionEnabled = field.GetValue<List<bool>>("actionEnabled");
         ActionIsOpen = field.GetValue<List<bool>>("actionIsOpen");
-        ActionStartIndex = field.GetValue<List<int>>("actionIsOpen");
+        ActionStartIndex = field.GetValue<List<int>>("actionStartIndex");
         ActionHashCodes = field.GetValue<List<int>>("actionHashCodes");
         UnityObjectParams = field.GetValue<List<NamedAssetPPtr>>("unityObjectParams");
         FsmGameObjectParams = field.GetValueArray("fsmGameObjectParams", x => new FsmGameObject(x));
@@ -116,7 +116,7 @@ public class FsmActionData
         FsmRectParams = field.GetValueArray("fsmRectParams", x => new FsmRect(x));
         FsmQuaternionParams = field.GetValueArray("fsmQuaternionParams", x => new FsmQuaternion(x));
         StringParams = field.GetValue<List<string>>("stringParams");
-        ByteData = field.GetValue<List<byte>>("byteData");
+        ByteData = [.. field.GetValue<List<byte>>("byteData")];
         ArrayParamSizes = field.GetValue<List<int>>("arrayParamSizes");
         ArrayParamTypes = field.GetValue<List<string>>("arrayParamTypes");
         CustomTypeSizes = field.GetValue<List<int>>("customTypeSizes");

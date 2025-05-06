@@ -14,6 +14,11 @@ public class FsmVector2 : NamedVariable
     {
         Value = new Vector2(field.GetField("value"));
     }
+
+    public override string ToString()
+    {
+        return $"[X = {Value.X}, Y = {Value.Y}]";
+    }
 }
 
 public class Vector2
@@ -31,5 +36,10 @@ public class Vector2
     {
         X = field.GetValue<float>("x");
         Y = field.GetValue<float>("y");
+    }
+
+    public override string ToString()
+    {
+        return $"[X = {X}, Y = {Y}]";
     }
 }

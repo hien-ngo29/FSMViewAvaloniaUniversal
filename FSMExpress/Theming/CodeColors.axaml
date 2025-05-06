@@ -1,0 +1,34 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <StackPanel>
+        <Label Width="200" Foreground="{DynamicResource TypeTextPrimitive}">Primitive</Label>
+        <Label Width="200" Foreground="{DynamicResource TypeTextType}">Type</Label>
+        <Label Width="200" Foreground="{DynamicResource TypeTextString}">String</Label>
+        <Label Width="200" Foreground="{DynamicResource TypeTextValue}">Value</Label>
+      </StackPanel>
+    </Border>
+  </Design.PreviewWith>
+  <Styles.Resources>
+    <ResourceDictionary>
+      <!-- use TypeTextTheme for multibindings -->
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="TypeTextPrimitive">#0000ff</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextType">#2b91af</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextString">#a31515</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextValue">#5b2da8</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextTheme">#ffffff</SolidColorBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="TypeTextPrimitive">#569cd6</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextType">#4ec9b0</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextString">#d69d85</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextValue">#b5cea8</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextTheme">#000000</SolidColorBrush>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+</Styles>

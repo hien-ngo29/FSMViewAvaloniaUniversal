@@ -14,6 +14,11 @@ public class FsmColor : NamedVariable
     {
         Value = new Color(field.GetField("value"));
     }
+
+    public override string ToString()
+    {
+        return $"[R = {Value.R}, G = {Value.G}, B = {Value.B}, A = {Value.A}]";
+    }
 }
 
 public class Color
@@ -37,5 +42,10 @@ public class Color
         G = field.GetValue<float>("g");
         B = field.GetValue<float>("b");
         A = field.GetValue<float>("a");
+    }
+
+    public override string ToString()
+    {
+        return $"[R = {R}, G = {G}, B = {B}, A = {A}]";
     }
 }

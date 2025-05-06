@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="OneOf" Version="3.0.271" />
     <PackageReference Include="OneOf.SourceGenerator" Version="3.0.271" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>

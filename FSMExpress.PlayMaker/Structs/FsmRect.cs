@@ -14,6 +14,11 @@ public class FsmRect : NamedVariable
     {
         Value = new Rect(field.GetField("value"));
     }
+
+    public override string ToString()
+    {
+        return $"[X = {Value.X}, Y = {Value.Y}, Width = {Value.Width}, Height = {Value.Height}]";
+    }
 }
 
 public class Rect
@@ -37,5 +42,10 @@ public class Rect
         Y = field.GetValue<float>("y");
         Width = field.GetValue<float>("width");
         Height = field.GetValue<float>("height");
+    }
+
+    public override string ToString()
+    {
+        return $"[X = {X}, Y = {Y}, Width = {Width}, Height = {Height}]";
     }
 }

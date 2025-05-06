@@ -1,7 +1,8 @@
-﻿using System.Drawing;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Drawing;
 
 namespace FSMExpress.Common.Document;
-public class FsmDocumentNode(string name)
+public partial class FsmDocumentNode(string name) : ObservableObject
 {
     public string Name { get; set; } = name;
     public bool IsStart { get; set; } = false;
@@ -11,4 +12,9 @@ public class FsmDocumentNode(string name)
     public Color TransitionColor { get; set; } = Color.Transparent;
     public List<FsmDocumentNodeTransition> Transitions { get; set; } = [];
     public List<FsmDocumentNodeField> Fields { get; set; } = [];
+
+    // add all properties that can change here.
+    // we might just make all fields changable in the future.
+    [ObservableProperty]
+    public bool _isSelected = false;
 }

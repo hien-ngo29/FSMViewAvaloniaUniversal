@@ -15,4 +15,9 @@ public class FsmObject : NamedVariable
     {
         Value = field.GetValue<NamedAssetPPtr>("value");
     }
+
+    public override string ToString()
+    {
+        return Value.ToString();
+    }
 }
