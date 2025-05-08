@@ -79,4 +79,39 @@ public class FsmVar : IFsmPlaymakerValuePreviewer
                 break;
         }
     }
+
+    public override string ToString()
+    {
+        var baseStr = VarType switch
+        {
+            VariableType.Float => FloatValue.HasValue ? FloatValue.Value.ToString() : null,
+            VariableType.Int => IntValue.HasValue ? IntValue.Value.ToString() : null,
+            VariableType.Bool => BoolValue.HasValue ? BoolValue.Value.ToString().ToLowerInvariant() : null,
+            VariableType.String => StringValue ?? null,
+            VariableType.Vector2 or
+            VariableType.Vector3 or
+            VariableType.Color or
+            VariableType.Rect or
+            VariableType.Quaternion => Vector4Value?.ToString() ?? null,
+            VariableType.Object or
+            VariableType.GameObject or
+            VariableType.Material or
+            VariableType.Texture => ObjectReference?.ToString() ?? null,
+            VariableType.Array => ArrayValue?.ToString() ?? null,
+            _ => null,
+        };
+
+        if (baseStr is not null)
+        {
+            return VariableName != string.Empty
+                ? $"{baseStr} ({VariableName})"
+                : baseStr;
+        }
+        else
+        {
+            return VariableName != string.Empty
+                ? VariableName
+                : "Var"; // shouldn't happen
+        }
+    }
 }
