@@ -6,7 +6,7 @@ public class FsmString : NamedVariable, IFsmPlaymakerValuePreviewer
 {
     public string Value { get; set; }
 
-    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.String;
 
     public FsmString()
     {

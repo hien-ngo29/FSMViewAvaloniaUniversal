@@ -150,7 +150,7 @@ public class FsmPlaymaker : IFsmMonoBehaviour
         object ret = paramDataType switch
         {
             ParamDataType.Integer => r.ReadInt32(),
-            ParamDataType.FsmInt when Version == 1 => new FsmInt() { Value = r.ReadInt32() },
+            ParamDataType.FsmInt when Version == 1 => new FsmInt { Value = r.ReadInt32() },
             ParamDataType.Enum => r.ReadInt32(),
             ParamDataType.Boolean => r.ReadBoolean(),
             ParamDataType.FsmBool when Version == 1 => new FsmBool { Value = r.ReadBoolean() },
@@ -188,7 +188,7 @@ public class FsmPlaymaker : IFsmMonoBehaviour
             ParamDataType.FsmEvent => actionData.StringParams[paramDataPos],
             ParamDataType.FsmEventTarget => actionData.FsmEventTargetParams[paramDataPos],
             ParamDataType.FsmArray => actionData.FsmArrayParams[paramDataPos],
-            ParamDataType.ObjectReference => new FsmObject() { Value = actionData.UnityObjectParams[paramDataPos] },
+            ParamDataType.ObjectReference => new FsmObject { Value = actionData.UnityObjectParams[paramDataPos] },
             ParamDataType.FunctionCall => actionData.FunctionCallParams[paramDataPos],
             ParamDataType.Array => ConvertActionDataArray(actionData, ref paramIdx),
             ParamDataType.FsmProperty => actionData.FsmPropertyParams[paramDataPos],
