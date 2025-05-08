@@ -1,9 +1,12 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmRect : NamedVariable
+public class FsmRect : NamedVariable, IFsmPlaymakerValuePreviewer
 {
     public Rect Value { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmRect()
     {

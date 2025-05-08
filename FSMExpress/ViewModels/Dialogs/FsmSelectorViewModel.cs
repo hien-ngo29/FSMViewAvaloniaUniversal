@@ -19,6 +19,7 @@ public partial class FsmSelectorViewModel : ViewModelBase, IDialogAware<FsmSelec
     [ObservableProperty]
     private string _searchText = "";
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsFsmSelected))]
     public FsmSelectorListEntry? _selectedEntry;
     [ObservableProperty]
     private RangeObservableCollection<FsmSelectorListEntry> _entries = [];
@@ -33,6 +34,8 @@ public partial class FsmSelectorViewModel : ViewModelBase, IDialogAware<FsmSelec
     public int Width => 350;
     public int Height => 450;
     public event Action<FsmSelectorListEntry?>? RequestClose;
+
+    public bool IsFsmSelected => SelectedEntry != null;
 
     public Task AsyncInit() => FillFsmEntries();
 
@@ -126,6 +129,14 @@ public partial class FsmSelectorViewModel : ViewModelBase, IDialogAware<FsmSelec
         var goPtr = monoBf["m_GameObject"];
         var goName = namer.GetName(goPtr["m_FileID"].AsInt, goPtr["m_PathID"].AsLong);
         return $"{goName} - {fsmName}";
+    }
+
+    public void ListBoxItem_DoubleTapped()
+    {
+        if (SelectedEntry is not null)
+        {
+            RequestClose?.Invoke(SelectedEntry);
+        }
     }
 
     public void BtnOk_Click()

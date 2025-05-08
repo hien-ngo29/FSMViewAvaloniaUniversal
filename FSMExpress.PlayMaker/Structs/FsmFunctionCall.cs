@@ -1,25 +1,28 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmFunctionCall
+public class FsmFunctionCall : IFsmPlaymakerValuePreviewer
 {
-    public string FunctionName;
-    public string ParameterType;
-    public FsmBool? BoolParameter;
-    public FsmFloat? FloatParameter;
-    public FsmInt? IntParameter;
-    public FsmGameObject? GameObjectParameter;
-    public FsmObject? ObjectParameter;
-    public FsmString? StringParameter;
-    public FsmVector2? Vector2Parameter;
-    public FsmVector3? Vector3Parameter;
-    public FsmRect? RectParamater;
-    public FsmQuaternion? QuaternionParameter;
-    public FsmObject? MaterialParameter;
-    public FsmObject? TextureParameter;
-    public FsmColor? ColorParameter;
-    public FsmEnum? EnumParameter;
-    public FsmArray? ArrayParameter;
+    public string FunctionName { get; set; }
+    public string ParameterType { get; set; }
+    public FsmBool? BoolParameter { get; set; }
+    public FsmFloat? FloatParameter { get; set; }
+    public FsmInt? IntParameter { get; set; }
+    public FsmGameObject? GameObjectParameter { get; set; }
+    public FsmObject? ObjectParameter { get; set; }
+    public FsmString? StringParameter { get; set; }
+    public FsmVector2? Vector2Parameter { get; set; }
+    public FsmVector3? Vector3Parameter { get; set; }
+    public FsmRect? RectParamater { get; set; }
+    public FsmQuaternion? QuaternionParameter { get; set; }
+    public FsmObject? MaterialParameter { get; set; }
+    public FsmObject? TextureParameter { get; set; }
+    public FsmColor? ColorParameter { get; set; }
+    public FsmEnum? EnumParameter { get; set; }
+    public FsmArray? ArrayParameter { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmFunctionCall()
     {

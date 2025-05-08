@@ -7,6 +7,7 @@
         <Label Width="200" Foreground="{DynamicResource TypeTextType}">Type</Label>
         <Label Width="200" Foreground="{DynamicResource TypeTextString}">String</Label>
         <Label Width="200" Foreground="{DynamicResource TypeTextValue}">Value</Label>
+        <Label Width="200" Foreground="{DynamicResource TypeTextPlain}">Plain</Label>
       </StackPanel>
     </Border>
   </Design.PreviewWith>
@@ -19,6 +20,7 @@
           <SolidColorBrush x:Key="TypeTextType">#2b91af</SolidColorBrush>
           <SolidColorBrush x:Key="TypeTextString">#a31515</SolidColorBrush>
           <SolidColorBrush x:Key="TypeTextValue">#5b2da8</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextPlain">#000000</SolidColorBrush>
           <SolidColorBrush x:Key="TypeTextTheme">#ffffff</SolidColorBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
@@ -26,6 +28,7 @@
           <SolidColorBrush x:Key="TypeTextType">#4ec9b0</SolidColorBrush>
           <SolidColorBrush x:Key="TypeTextString">#d69d85</SolidColorBrush>
           <SolidColorBrush x:Key="TypeTextValue">#b5cea8</SolidColorBrush>
+          <SolidColorBrush x:Key="TypeTextPlain">#dedede</SolidColorBrush>
           <SolidColorBrush x:Key="TypeTextTheme">#000000</SolidColorBrush>
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>

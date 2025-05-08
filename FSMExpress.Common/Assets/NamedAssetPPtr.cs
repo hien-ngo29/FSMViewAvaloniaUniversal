@@ -38,7 +38,9 @@ public class NamedAssetPPtr : AssetPPtr
         else
             fileText = FileId.ToString();
 
-        if (Name != string.Empty)
+        if (PathId == 0)
+            return "PPtr(null)";
+        else if (Name != string.Empty)
             return $"{Name}/PPtr({fileText},{PathId})";
         else
             return $"PPtr({fileText},{PathId})";

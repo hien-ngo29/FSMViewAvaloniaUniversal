@@ -1,10 +1,13 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmEnum : NamedVariable
+public class FsmEnum : NamedVariable, IFsmPlaymakerValuePreviewer
 {
     public string EnumName { get; set; }
     public int IntValue { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmEnum()
     {

@@ -68,16 +68,10 @@ public class FsmPlaymaker : IFsmMonoBehaviour
                 docNode.Transitions.Add(docNodeTransition);
             }
 
-            //docNode.Fields.Add(new FsmDocumentNodeClassField(new AssetTypeReference("Classname", "Namespace", "AssemblyName"), true));
-            //docNode.Fields.Add(new FsmDocumentNodeDataField("abc", new FsmDocumentNodeFieldIntegerValue(123)));
-            //docNode.Fields.Add(new FsmDocumentNodeDataField("def", new FsmDocumentNodeFieldStringValue("some string")));
-
             var stateActionData = state.ActionData;
             for (var actionIdx = 0; actionIdx < stateActionData.ActionNames.Count; actionIdx++)
             {
-                var actionName = stateActionData.ActionNames[actionIdx];
-                if (actionName.Contains('.'))
-                    actionName = actionName[(actionName.LastIndexOf('.') + 1)..];
+                var actionName = TrimFullNameToClassName(stateActionData.ActionNames[actionIdx]);
 
                 docNode.Fields.Add(new FsmDocumentNodeClassField(new AssetTypeReference(actionName, "Namespace", "AssemblyName"), true));
                 ConvertActionData(docNode.Fields, stateActionData, actionIdx);
@@ -118,7 +112,7 @@ public class FsmPlaymaker : IFsmMonoBehaviour
             elements[eleIdx] = ConvertFsmObject(actionData, ref paramIdx);
         }
 
-        return new FsmArrayInfo(type, elements);
+        return new FsmArrayInfo(TrimFullNameToClassName(type), elements);
     }
 
     private void ConvertActionData(List<FsmDocumentNodeField> fields, FsmActionData actionData, int actionIdx)
@@ -132,13 +126,13 @@ public class FsmPlaymaker : IFsmMonoBehaviour
         {
             var paramName = actionData.ParamName[paramIdx];
             var paramObj = ConvertFsmObject(actionData, ref paramIdx);
-            fields.Add(new FsmDocumentNodeDataField(paramName, ConvertObjectToNodeFieldValue(paramObj)));
+            fields.Add(new FsmDocumentNodeDataField(paramName, ConvertObjectToNodeFieldValue(paramObj, false)));
             if (paramObj is FsmArrayInfo objArrayInf)
             {
                 for (var eleIdx = 0; eleIdx < objArrayInf.Elements.Length; eleIdx++)
                 {
                     var element = objArrayInf.Elements[eleIdx];
-                    fields.Add(new FsmDocumentNodeDataField($"[{eleIdx}]", ConvertObjectToNodeFieldValue(element)));
+                    fields.Add(new FsmDocumentNodeDataField($"{paramName}[{eleIdx}]", ConvertObjectToNodeFieldValue(element, true)));
                 }
             }
         }
@@ -194,7 +188,7 @@ public class FsmPlaymaker : IFsmMonoBehaviour
             ParamDataType.FsmEvent => actionData.StringParams[paramDataPos],
             ParamDataType.FsmEventTarget => actionData.FsmEventTargetParams[paramDataPos],
             ParamDataType.FsmArray => actionData.FsmArrayParams[paramDataPos],
-            ParamDataType.ObjectReference => $"ObjRef([{actionData.UnityObjectParams[paramDataPos]}])",
+            ParamDataType.ObjectReference => new FsmObject() { Value = actionData.UnityObjectParams[paramDataPos] },
             ParamDataType.FunctionCall => actionData.FunctionCallParams[paramDataPos],
             ParamDataType.Array => ConvertActionDataArray(actionData, ref paramIdx),
             ParamDataType.FsmProperty => actionData.FsmPropertyParams[paramDataPos],
@@ -223,22 +217,34 @@ public class FsmPlaymaker : IFsmMonoBehaviour
         return ret;
     }
 
-    private FsmDocumentNodeFieldValue ConvertObjectToNodeFieldValue(object obj)
+    private static FsmDocumentNodeFieldValue ConvertObjectToNodeFieldValue(object obj, bool inArray)
     {
+        var indent = inArray ? 1 : 0;
+
         if (obj is int objInt)
-            return new FsmDocumentNodeFieldIntegerValue(objInt);
+            return new FsmDocumentNodeFieldIntegerValue(objInt, indent);
         else if (obj is float objFloat)
-            return new FsmDocumentNodeFieldFloatValue(objFloat);
+            return new FsmDocumentNodeFieldFloatValue(objFloat, indent);
         else if (obj is bool objBool)
-            return new FsmDocumentNodeFieldBooleanValue(objBool);
+            return new FsmDocumentNodeFieldBooleanValue(objBool, indent);
         else if (obj is string objString)
-            return new FsmDocumentNodeFieldStringValue(objString);
+            return new FsmDocumentNodeFieldStringValue(objString, indent);
         else if (obj is FsmArrayInfo objArrayInf)
-            return new FsmDocumentNodeFieldArrayValue(objArrayInf.TypeName, objArrayInf.Elements.Length);
+            return new FsmDocumentNodeFieldArrayValue(objArrayInf.TypeName, objArrayInf.Elements.Length, indent);
+        else if (obj is IFsmPlaymakerValuePreviewer objHandler)
+            return new FsmPlaymakerValue(objHandler, indent);
         else
-            return new FsmDocumentNodeFieldObjectValue(obj);
+            return new FsmDocumentNodeFieldFallbackValue(obj, indent);
 
         //return new FsmDocumentNodeFieldStringValue("[unsupported object]");
+    }
+
+    private static string TrimFullNameToClassName(string fullName)
+    {
+        if (fullName.Contains('.'))
+            fullName = fullName[(fullName.LastIndexOf('.') + 1)..];
+
+        return fullName;
     }
 
     private static readonly DrawingColor[] STATE_COLORS =

@@ -45,9 +45,9 @@ public class TypeColorConverter : IMultiValueConverter
                 FsmDocumentNodeDataFieldKind.Integer => GetBrushFromName("TypeTextValue"),
                 FsmDocumentNodeDataFieldKind.Float => GetBrushFromName("TypeTextValue"),
                 FsmDocumentNodeDataFieldKind.String => GetBrushFromName("TypeTextString"),
-                FsmDocumentNodeDataFieldKind.Array => GetBrushFromName("TypeTextType"),
-                FsmDocumentNodeDataFieldKind.Object => GetBrushFromName("TypeTextType"),
-                _ => GetBrushFromName("TypeTextType")
+                FsmDocumentNodeDataFieldKind.Array => GetBrushFromName("TypeTextPlain"),
+                FsmDocumentNodeDataFieldKind.Object => GetBrushFromName("TypeTextPlain"),
+                _ => GetBrushFromName("TypeTextPlain")
             };
         }
 

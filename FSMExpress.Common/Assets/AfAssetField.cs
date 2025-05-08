@@ -62,7 +62,11 @@ public class AfAssetField(AssetTypeValueField valueField, AfAssetNamer namer) : 
             var fileId = field["m_FileID"].AsInt;
             var pathId = field["m_PathID"].AsLong;
             var name = namer.GetName(fileId, pathId) ?? string.Empty;
-            return (T)(object)new NamedAssetPPtr(string.Empty, fileId, pathId, name);
+
+            var pptr = new NamedAssetPPtr(string.Empty, fileId, pathId, name);
+            namer.NameAssetPPtrFile(pptr);
+
+            return (T)(object)pptr;
         }
         else if (paramType.IsGenericType && (genericType = paramType.GetGenericTypeDefinition()) == typeof(List<>))
         {
@@ -154,7 +158,11 @@ public class AfAssetField(AssetTypeValueField valueField, AfAssetNamer namer) : 
                 var fileId = child["m_FileID"].AsInt;
                 var pathId = child["m_PathID"].AsLong;
                 var name = namer.GetName(fileId, pathId) ?? string.Empty;
-                list.Add(new NamedAssetPPtr(string.Empty, fileId, pathId, name));
+
+                var pptr = new NamedAssetPPtr(string.Empty, fileId, pathId, name);
+                namer.NameAssetPPtrFile(pptr);
+
+                list.Add(pptr);
             }
 
             return (T)(object)list;

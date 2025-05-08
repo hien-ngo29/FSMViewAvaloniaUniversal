@@ -174,4 +174,10 @@ public class AfAssetNamer(AssetsManager manager, AssetsFileInstance inst)
             return null;
         }
     }
+
+    public bool NameAssetPPtrFile(AssetPPtr pptr)
+    {
+        pptr.SetFilePathFromFile(manager, inst);
+        return !string.IsNullOrEmpty(pptr.FilePath);
+    }
 }

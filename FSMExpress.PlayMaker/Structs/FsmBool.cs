@@ -1,9 +1,12 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmBool : NamedVariable
+public class FsmBool : NamedVariable, IFsmPlaymakerValuePreviewer
 {
     public bool Value { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Boolean;
 
     public FsmBool()
     {

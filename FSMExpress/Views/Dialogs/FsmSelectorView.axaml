@@ -10,7 +10,9 @@
     <Grid RowDefinitions="Auto,*,Auto"
           HorizontalAlignment="Stretch">
       <TextBox Grid.Row="0" Text="{Binding SearchText}" />
-      <ListBox Grid.Row="1" ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}">
+      <ListBox Grid.Row="1"
+               ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}"
+               DoubleTapped="ListBoxItem_DoubleTapped">
         <ListBox.ItemTemplate>
           <DataTemplate DataType="dlg:FsmSelectorListEntry">
             <TextBlock Text="{Binding Path=Name}"></TextBlock>
@@ -18,7 +20,7 @@
         </ListBox.ItemTemplate>
       </ListBox>
       <Grid Grid.Row="2" ColumnDefinitions="*,*">
-        <Button Grid.Column="0" Command="{Binding BtnOk_Click}">Ok</Button>
+        <Button Grid.Column="0" Command="{Binding BtnOk_Click}" IsEnabled="{Binding IsFsmSelected}">Ok</Button>
         <Button Grid.Column="1" Command="{Binding BtnCancel_Click}">Cancel</Button>
       </Grid>
     </Grid>

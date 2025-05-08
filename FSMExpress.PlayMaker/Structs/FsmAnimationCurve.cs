@@ -1,9 +1,12 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmAnimationCurve
+public class FsmAnimationCurve : IFsmPlaymakerValuePreviewer
 {
     public AnimationCurve Curve { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmAnimationCurve()
     {

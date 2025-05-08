@@ -1,10 +1,13 @@
 ﻿using FSMExpress.Common.Assets;
+using FSMExpress.Common.Document;
 using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmObject : NamedVariable
+public class FsmObject : NamedVariable, IFsmPlaymakerValuePreviewer
 {
     public NamedAssetPPtr Value { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmObject()
     {

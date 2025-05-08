@@ -37,7 +37,7 @@
         <SelectableTextBlock
           HorizontalAlignment="Stretch"
           Background="{DynamicResource ThemeBackgroundBrush}"
-          Padding="5" Height="28"
+          Padding="{Binding Value.DisplayIndent, Converter={x:Static sid:TypeIndentConverter.Converter}}" Height="28"
           Grid.Column="0">
           <Run Text="{Binding Value.DisplayType}"
             FontWeight="Bold">
@@ -51,24 +51,42 @@
           <Run Text="{Binding Key}"
             FontWeight="Bold" />
         </SelectableTextBlock>
-        <Border
+        <TextBox
+          HorizontalAlignment="Stretch" TextWrapping="NoWrap"
+          Background="{DynamicResource ThemeBackgroundBrush}"
+          Text="{Binding Value.DisplayString}" IsReadOnly="True"
+          Padding="5" Height="28"
+          Grid.Column="1">
+          <TextBox.Foreground>
+            <MultiBinding Converter="{StaticResource TypeColorConverter}" ConverterParameter="Value">
+              <Binding Path="Value.FieldKind" />
+              <DynamicResource ResourceKey="TypeTextTheme" />
+            </MultiBinding>
+          </TextBox.Foreground>
+        </TextBox>
+        <!-- too much trouble to get multicolored selectable text working :( -->
+        <!--<Border
           BorderBrush="{StaticResource ThemeBorderMidBrush}"
           BorderThickness="1"
           Grid.Column="1" Height="28">
-          <SelectableTextBlock
-            HorizontalAlignment="Stretch"
-            Background="{DynamicResource ThemeBackgroundBrush}"
-            Padding="5">
-            <Run Text="{Binding Value.DisplayString}">
-              <Run.Foreground>
-                <MultiBinding Converter="{StaticResource TypeColorConverter}" ConverterParameter="Value">
-                  <Binding Path="Value.FieldKind" />
-                  <DynamicResource ResourceKey="TypeTextTheme" />
-                </MultiBinding>
-              </Run.Foreground>
-            </Run>
-          </SelectableTextBlock>
-        </Border>
+          <ScrollViewer
+            HorizontalScrollBarVisibility="Hidden"
+            VerticalScrollBarVisibility="Disabled">
+            <SelectableTextBlock
+              HorizontalAlignment="Left" TextWrapping="NoWrap"
+              Background="{DynamicResource ThemeBackgroundBrush}"
+              Padding="5">
+              <Run Text="{Binding Value.DisplayString}">
+                <Run.Foreground>
+                  <MultiBinding Converter="{StaticResource TypeColorConverter}" ConverterParameter="Value">
+                    <Binding Path="Value.FieldKind" />
+                    <DynamicResource ResourceKey="TypeTextTheme" />
+                  </MultiBinding>
+                </Run.Foreground>
+              </Run>
+            </SelectableTextBlock>
+          </ScrollViewer>
+        </Border>-->
       </Grid>
     </DataTemplate>
   </Window.DataTemplates>

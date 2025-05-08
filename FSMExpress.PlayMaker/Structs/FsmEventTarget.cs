@@ -1,8 +1,9 @@
 ﻿using FSMExpress.Common.Assets;
+using FSMExpress.Common.Document;
 using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmEventTarget
+public class FsmEventTarget : IFsmPlaymakerValuePreviewer
 {
     public EventTarget Target { get; set; }
     public FsmBool ExcludeSelf { get; set; }
@@ -10,6 +11,8 @@ public class FsmEventTarget
     public FsmString FsmName { get; set; }
     public FsmBool SendToChildren { get; set; }
     public NamedAssetPPtr FsmComponent { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmEventTarget()
     {

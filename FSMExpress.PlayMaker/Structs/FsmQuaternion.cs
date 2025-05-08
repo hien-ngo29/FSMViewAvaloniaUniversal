@@ -1,9 +1,12 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmQuaternion : NamedVariable
+public class FsmQuaternion : NamedVariable, IFsmPlaymakerValuePreviewer
 {
     public Quaternion Value { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmQuaternion()
     {

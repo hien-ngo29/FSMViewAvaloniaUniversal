@@ -1,9 +1,12 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmColor : NamedVariable
+public class FsmColor : NamedVariable, IFsmPlaymakerValuePreviewer
 {
     public Color Value { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmColor()
     {

@@ -1,8 +1,9 @@
 ﻿using FSMExpress.Common.Assets;
+using FSMExpress.Common.Document;
 using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmVar
+public class FsmVar : IFsmPlaymakerValuePreviewer
 {
     public string VariableName { get; set; }
     public string ObjectType { get; set; }
@@ -15,6 +16,16 @@ public class FsmVar
     public Vector4? Vector4Value { get; set; }
     public NamedAssetPPtr? ObjectReference { get; set; }
     public FsmArray? ArrayValue { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => VarType switch
+    {
+        VariableType.Float => FsmDocumentNodeDataFieldKind.Float,
+        VariableType.Int => FsmDocumentNodeDataFieldKind.Integer,
+        VariableType.Bool => FsmDocumentNodeDataFieldKind.Boolean,
+        VariableType.String => FsmDocumentNodeDataFieldKind.String,
+        VariableType.Array => FsmDocumentNodeDataFieldKind.Array,
+        _ => FsmDocumentNodeDataFieldKind.Object
+    };
 
     public FsmVar()
     {

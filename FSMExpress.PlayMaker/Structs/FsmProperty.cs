@@ -1,7 +1,8 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmProperty
+public class FsmProperty : IFsmPlaymakerValuePreviewer
 {
     public FsmObject TargetObject { get; set; }
     public string TargetTypeName { get; set; }
@@ -22,6 +23,8 @@ public class FsmProperty
     public FsmEnum EnumParameter { get; set; }
     public FsmArray ArrayParameter { get; set; }
     public bool SetProperty { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmProperty()
     {

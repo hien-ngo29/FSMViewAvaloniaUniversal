@@ -1,11 +1,14 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmLayoutOption : NamedVariable
+public class FsmLayoutOption : NamedVariable, IFsmPlaymakerValuePreviewer
 {
-    public LayoutOptionType Option;
-    public FsmFloat? FloatParam;
-    public FsmBool? BoolParam;
+    public LayoutOptionType Option { get; set; }
+    public FsmFloat? FloatParam { get; set; }
+    public FsmBool? BoolParam { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmLayoutOption()
     {

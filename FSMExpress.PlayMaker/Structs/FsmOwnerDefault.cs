@@ -1,10 +1,13 @@
-﻿using FSMExpress.Common.Interfaces;
+﻿using FSMExpress.Common.Document;
+using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmOwnerDefault
+public class FsmOwnerDefault : IFsmPlaymakerValuePreviewer
 {
     public OwnerDefaultOption OwnerOption { get; set; }
     public FsmGameObject? GameObject { get; set; }
+
+    public FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Object;
 
     public FsmOwnerDefault()
     {
