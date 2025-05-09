@@ -95,7 +95,7 @@
     <Menu Grid.Row="0">
       <MenuItem Header="File">
         <MenuItem Header="Open" Command="{Binding FileOpen}" />
-        <MenuItem Header="Open scene list" />
+        <MenuItem Header="Open scene list" Command="{Binding FileOpenSceneList}" />
         <MenuItem Header="Open resources.assets" />
         <MenuItem Header="Open last" IsEnabled="False" />
       </MenuItem>

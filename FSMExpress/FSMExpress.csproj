@@ -46,6 +46,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\Dialogs\SceneSelectorView.axaml.cs">
+      <DependentUpon>SceneSelectorView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Dialogs\FsmSelectorView.axaml.cs">
       <DependentUpon>FsmSelectorView.axaml</DependentUpon>
     </Compile>

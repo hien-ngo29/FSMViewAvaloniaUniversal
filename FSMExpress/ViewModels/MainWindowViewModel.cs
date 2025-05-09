@@ -8,6 +8,8 @@ using FSMExpress.Logic.Util;
 using FSMExpress.PlayMaker;
 using FSMExpress.Services;
 using FSMExpress.ViewModels.Dialogs;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace FSMExpress.ViewModels;
 
@@ -24,13 +26,61 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel()
     {
         _manager.UseMonoTemplateFieldCache = true;
+        _manager.UseTemplateFieldCache = true;
+        _manager.UseQuickLookup = true;
+    }
+
+    public async Task<string?> PickScene(string ggmPath)
+    {
+        var dialogService = Ioc.Default.GetRequiredService<IDialogService>();
+
+        var fileInst = _manager.LoadAssetsFile(ggmPath);
+        if (!_manager.LoadClassDatabase(fileInst))
+        {
+            await MessageBoxUtil.ShowDialog("Class database failed to load", "Couldn't load class database class. Check if classdata.tpk exists?");
+            return null;
+        }
+
+        var sceneChoice = await dialogService.ShowDialog(new SceneSelectorViewModel(_manager, fileInst));
+        if (sceneChoice == null)
+            return null;
+
+        return Path.Combine(Path.GetDirectoryName(ggmPath)!, sceneChoice.FileName);
+    }
+
+    public async Task<AssetExternal?> PickFsm(string filePath)
+    {
+        var dialogService = Ioc.Default.GetRequiredService<IDialogService>();
+
+        var fileInst = _manager.LoadAssetsFile(filePath);
+        if (!_manager.LoadClassDatabase(fileInst))
+        {
+            await MessageBoxUtil.ShowDialog("Class database failed to load", "Couldn't load class database class. Check if classdata.tpk exists?");
+            return null;
+        }
+
+        var fsmChoice = await dialogService.ShowDialog(new FsmSelectorViewModel(_manager, fileInst));
+        if (fsmChoice == null)
+            return null;
+
+        var fsmFileInst = _manager.FileLookup[fsmChoice.Ptr.FilePath];
+        return _manager.GetExtAsset(fsmFileInst, 0, fsmChoice.Ptr.PathId);
+    }
+
+    private void LoadPlaymakerFsm(AssetExternal fsmExt)
+    {
+        var fsmBaseField = fsmExt.baseField;
+        var fsmFileInst = fsmExt.file;
+
+        var fsmObject = new FsmPlaymaker(new AfAssetField(fsmBaseField["fsm"], new AfAssetNamer(_manager, fsmFileInst)));
+        var fsmDoc = fsmObject.MakeDocument();
+        ActiveDocument = fsmDoc;
     }
 
     public async void FileOpen()
     {
         var storageProvider = StorageService.GetStorageProvider();
-        var dialogService = Ioc.Default.GetRequiredService<IDialogService>();
-        if (storageProvider is null || dialogService is null)
+        if (storageProvider is null)
             return;
 
         var result = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -44,27 +94,45 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
 
         var fileName = fileNames[0];
-        var fileInst = _manager.LoadAssetsFile(fileName);
-        if (!_manager.LoadClassDatabase(fileInst))
+        var selectedFsm = await PickFsm(fileName);
+        if (!selectedFsm.HasValue)
+            return;
+
+        LoadPlaymakerFsm(selectedFsm.Value);
+    }
+
+    public async void FileOpenSceneList()
+    {
+        var storageProvider = StorageService.GetStorageProvider();
+        if (storageProvider is null)
+            return;
+
+        var result = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
         {
-            await MessageBoxUtil.ShowDialog("Class Database failed to load", "Couldn't load class database class. Check if classdata.tpk exists?");
+            Title = "Open a [Game name]_Data folder"
+        });
+
+        var folderNames = FileDialogUtils.GetOpenFolderDialogFolders(result);
+        if (folderNames.Length == 0)
+            return;
+
+        var folderName = folderNames[0];
+        var fileName = Path.Combine(folderName, "globalgamemanagers");
+        if (!File.Exists(fileName))
+        {
+            await MessageBoxUtil.ShowDialog("No globalgamemanagers", "Couldn't load globalgamemanagers. Did you open the right folder?");
             return;
         }
 
-        var fsmChoice = await dialogService.ShowDialog(new FsmSelectorViewModel(_manager, fileInst));
-        if (fsmChoice == null)
+        var scenePath = await PickScene(fileName);
+        if (string.IsNullOrEmpty(scenePath))
             return;
 
-        var fsmFileInst = _manager.FileLookup[fsmChoice.Ptr.FilePath];
-        var fsmBaseField = _manager.GetBaseField(fsmFileInst, fsmChoice.Ptr.PathId);
-        var fsmObject = new FsmPlaymaker(new AfAssetField(fsmBaseField["fsm"], new AfAssetNamer(_manager, fsmFileInst)));
-        var fsmDoc = fsmObject.MakeDocument();
-        ActiveDocument = fsmDoc;
-    }
+        var selectedFsm = await PickFsm(scenePath);
+        if (!selectedFsm.HasValue)
+            return;
 
-    public void FileOpenSceneList()
-    {
-
+        LoadPlaymakerFsm(selectedFsm.Value);
     }
 
     public void FileOpenFsmJson()
