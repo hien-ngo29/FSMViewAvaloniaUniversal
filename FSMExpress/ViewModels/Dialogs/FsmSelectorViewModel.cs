@@ -105,6 +105,8 @@ public partial class FsmSelectorViewModel : ViewModelBase, IDialogAware<FsmSelec
             }
         }
 
+        _internalEntries.Sort((a, b) => a.Name.CompareTo(b.Name));
+
         SearchText = "";
         FilterEntries(string.Empty);
     }

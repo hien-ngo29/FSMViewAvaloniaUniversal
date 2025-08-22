@@ -4,21 +4,28 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using FSMExpress.Common.Assets;
 using FSMExpress.Common.Document;
+using FSMExpress.Logic.Configuration;
 using FSMExpress.Logic.Util;
 using FSMExpress.PlayMaker;
 using FSMExpress.Services;
 using FSMExpress.ViewModels.Dialogs;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace FSMExpress.ViewModels;
-
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly AssetsManager _manager = new();
 
     [ObservableProperty]
+    private string? _lastOpenedPath = null;
+
+    [ObservableProperty]
     private FsmDocument? _activeDocument = null;
+
+    [ObservableProperty]
+    private ObservableCollection<FsmDocument> _documents = [];
 
     [ObservableProperty]
     public FsmDocumentNode? _selectedNode = null;
@@ -52,6 +59,18 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var dialogService = Ioc.Default.GetRequiredService<IDialogService>();
 
+        var fileType = FileTypeDetector.DetectFileType(filePath);
+        if (fileType == DetectedFileType.BundleFile)
+        {
+            await MessageBoxUtil.ShowDialog("Unsupported type", "Sorry, bundles aren't supported yet.");
+            return null;
+        }
+        else if (fileType == DetectedFileType.Unknown)
+        {
+            await MessageBoxUtil.ShowDialog("Unsupported type", "Could not detect this as a valid Unity file.");
+            return null;
+        }
+
         var fileInst = _manager.LoadAssetsFile(filePath);
         if (!_manager.LoadClassDatabase(fileInst))
         {
@@ -74,6 +93,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var fsmObject = new FsmPlaymaker(new AfAssetField(fsmBaseField["fsm"], new AfAssetNamer(_manager, fsmFileInst)));
         var fsmDoc = fsmObject.MakeDocument();
+        Documents.Add(fsmDoc);
         ActiveDocument = fsmDoc;
     }
 
@@ -94,6 +114,8 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
 
         var fileName = fileNames[0];
+        LastOpenedPath = fileName;
+
         var selectedFsm = await PickFsm(fileName);
         if (!selectedFsm.HasValue)
             return;
@@ -103,30 +125,20 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public async void FileOpenSceneList()
     {
-        var storageProvider = StorageService.GetStorageProvider();
-        if (storageProvider is null)
+        string? ggmPath;
+        if (ConfigurationManager.Settings.DefaultGamePath is not null)
+            ggmPath = Path.Combine(ConfigurationManager.Settings.DefaultGamePath, "globalgamemanagers");
+        else
+            ggmPath = await PickGamePathWithFile("globalgamemanagers");
+
+        if (ggmPath is null)
             return;
 
-        var result = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
-        {
-            Title = "Open a [Game name]_Data folder"
-        });
-
-        var folderNames = FileDialogUtils.GetOpenFolderDialogFolders(result);
-        if (folderNames.Length == 0)
-            return;
-
-        var folderName = folderNames[0];
-        var fileName = Path.Combine(folderName, "globalgamemanagers");
-        if (!File.Exists(fileName))
-        {
-            await MessageBoxUtil.ShowDialog("No globalgamemanagers", "Couldn't load globalgamemanagers. Did you open the right folder?");
-            return;
-        }
-
-        var scenePath = await PickScene(fileName);
+        var scenePath = await PickScene(ggmPath);
         if (string.IsNullOrEmpty(scenePath))
             return;
+
+        LastOpenedPath = scenePath;
 
         var selectedFsm = await PickFsm(scenePath);
         if (!selectedFsm.HasValue)
@@ -135,33 +147,91 @@ public partial class MainWindowViewModel : ViewModelBase
         LoadPlaymakerFsm(selectedFsm.Value);
     }
 
-    public void FileOpenFsmJson()
+    public async void FileOpenResourcesAssets()
     {
+        string? resourcesPath;
+        if (ConfigurationManager.Settings.DefaultGamePath is not null)
+            resourcesPath = Path.Combine(ConfigurationManager.Settings.DefaultGamePath, "resources.assets");
+        else
+            resourcesPath = await PickGamePathWithFile("resources.assets");
 
+        if (resourcesPath is null)
+            return;
+
+        LastOpenedPath = resourcesPath;
+
+        var selectedFsm = await PickFsm(resourcesPath);
+        if (!selectedFsm.HasValue)
+            return;
+
+        LoadPlaymakerFsm(selectedFsm.Value);
     }
 
-    public void FileOpenResourcesAssets()
+    public async void FileOpenLast()
     {
+        if (LastOpenedPath is null)
+        {
+            return;
+        }
 
+        if (!File.Exists(LastOpenedPath))
+        {
+            await MessageBoxUtil.ShowDialog($"No {LastOpenedPath}", $"Couldn't load {LastOpenedPath}. Was it deleted?");
+            return;
+        }
+
+        var selectedFsm = await PickFsm(LastOpenedPath);
+        if (!selectedFsm.HasValue)
+            return;
+
+        LoadPlaymakerFsm(selectedFsm.Value);
     }
 
-    public void FileOpenLast()
+    public async void ConfigSetGamePath()
     {
+        // we're checking ggm path for sanity here
+        var ggmPath = await PickGamePathWithFile("globalgamemanagers");
+        if (ggmPath is null)
+            return;
 
+        ConfigurationManager.Settings.DefaultGamePath = Path.GetDirectoryName(ggmPath);
     }
 
-    public void ConfigSetGamePath()
+    public void CloseTab()
     {
-
-    }
-
-    public void CloseTabs()
-    {
-
+        if (ActiveDocument is not null)
+            Documents.Remove(ActiveDocument);
     }
 
     public void CloseAllTabs()
     {
+        ActiveDocument = null;
+        Documents.Clear();
+    }
 
+    private static async Task<string?> PickGamePathWithFile(string fileName)
+    {
+        var storageProvider = StorageService.GetStorageProvider();
+        if (storageProvider is null)
+            return null;
+
+        var result = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+        {
+            Title = "Open a [Game name]_Data folder"
+        });
+
+        var folderNames = FileDialogUtils.GetOpenFolderDialogFolders(result);
+        if (folderNames.Length == 0)
+            return null;
+
+        var folderName = folderNames[0];
+        var filePath = Path.Combine(folderName, fileName);
+        if (!File.Exists(filePath))
+        {
+            await MessageBoxUtil.ShowDialog($"No {fileName}", $"Couldn't load {fileName}. Did you open the right folder?");
+            return null;
+        }
+
+        return filePath;
     }
 }

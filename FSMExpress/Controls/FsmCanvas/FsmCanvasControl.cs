@@ -4,6 +4,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using FSMExpress.Common.Document;
+using FSMExpress.Logic.Util;
 
 namespace FSMExpress.Controls.FsmCanvas;
 public class FsmCanvasControl : Grid
@@ -93,6 +94,11 @@ public class FsmCanvasControl : Grid
 
         _beingDragged = false;
         Cursor = new Cursor(StandardCursorType.Arrow);
+
+        if (Document is not null)
+        {
+            Document.ViewTransform = MathUtils.AvaloniaToSystemMatrix(_mt.Matrix);
+        }
     }
 
     private void MouseMoveCanvas(object? sender, PointerEventArgs e)
@@ -119,6 +125,11 @@ public class FsmCanvasControl : Grid
         _mt.Matrix *= Matrix.CreateTranslation(-zoomX, -zoomY);
         _mt.Matrix *= Matrix.CreateScale(scale, scale);
         _mt.Matrix *= Matrix.CreateTranslation(zoomX, zoomY);
+
+        if (Document is not null && !_beingDragged)
+        {
+            Document.ViewTransform = MathUtils.AvaloniaToSystemMatrix(_mt.Matrix);
+        }
     }
 
     private void RebuildGraph()
@@ -236,6 +247,8 @@ public class FsmCanvasControl : Grid
             Canvas.SetTop(border, bounds.Y);
             _can.Children.Add(border);
         }
+
+        _mt.Matrix = MathUtils.SystemToAvaloniaMatrix(Document.ViewTransform);
     }
 
     private static Color DrawingToAvaloniaColor(System.Drawing.Color drawingColor)

@@ -27,8 +27,8 @@ public partial class SceneSelectorViewModel : ViewModelBase, IDialogAware<SceneS
     private readonly Action<string> _searchDb;
 
     public string Title => "Scene Selector";
-    public int Width => 350;
-    public int Height => 450;
+    public int Width => 450;
+    public int Height => 650;
     public event Action<SceneSelectorListEntry?>? RequestClose;
 
     public bool IsSceneSelected => SelectedEntry != null;

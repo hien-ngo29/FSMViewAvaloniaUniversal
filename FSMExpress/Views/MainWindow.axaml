@@ -1,9 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="using:FSMExpress.Views"
         xmlns:vm="using:FSMExpress.ViewModels"
         xmlns:can="using:FSMExpress.Controls.FsmCanvas"
         xmlns:sid="using:FSMExpress.Controls.Sidebar"
         xmlns:fcd="using:FSMExpress.Common.Document"
+        xmlns:cnf="using:FSMExpress.Logic.Configuration"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -91,30 +93,73 @@
     </DataTemplate>
   </Window.DataTemplates>
   
-  <Grid RowDefinitions="21,*">
+  <Grid RowDefinitions="21,21,*">
     <Menu Grid.Row="0">
       <MenuItem Header="File">
         <MenuItem Header="Open" Command="{Binding FileOpen}" />
         <MenuItem Header="Open scene list" Command="{Binding FileOpenSceneList}" />
-        <MenuItem Header="Open resources.assets" />
-        <MenuItem Header="Open last" IsEnabled="False" />
+        <MenuItem Header="Open resources.assets" Command="{Binding FileOpenResourcesAssets}" />
+        <MenuItem
+          Header="Open last"
+          IsEnabled="{Binding LastOpenedPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+          Command="{Binding FileOpenLast}" />
       </MenuItem>
       <MenuItem Header="Config">
-        <MenuItem Header="Set game path" Command="{Binding ConfigSetGamePath}" />
+        <MenuItem
+          Header="{Binding Source={x:Static cnf:ConfigurationManager.Settings}, Path=DefaultGamePath,
+                   StringFormat='Set game path (Current path is {0})',
+                   TargetNullValue='Set game path'}"
+          Command="{Binding ConfigSetGamePath}" />
       </MenuItem>
-      <!--<MenuItem Header="Close tab"></MenuItem>
-      <MenuItem Header="Close all tabs"></MenuItem>-->
+      <MenuItem
+        Header="Close tab"
+        Command="{Binding CloseTab}"
+        IsEnabled="{Binding !!Documents.Count}" />
+      <MenuItem
+        Header="Close all tabs"
+        Command="{Binding CloseAllTabs}"
+        IsEnabled="{Binding !!Documents.Count}" />
     </Menu>
-    <Grid Grid.Row="1" ColumnDefinitions="*,4,300">
+    <TabControl
+      Grid.Row="1"
+      ItemsSource="{Binding Documents}"
+      SelectedItem="{Binding ActiveDocument}">
+      <TabControl.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding Name}" />
+        </DataTemplate>
+      </TabControl.ItemTemplate>
+    </TabControl>
+    <Grid Grid.Row="2" ColumnDefinitions="*,4,300">
       <can:FsmCanvasControl
         Document="{Binding ActiveDocument}"
         SelectedNode="{Binding SelectedNode, Mode=TwoWay}"
         Grid.Column="0" />
       <GridSplitter Grid.Column="1" />
-      <!-- todo: move to own control -->
-      <ScrollViewer Grid.Column="2">
-        <ItemsControl ItemsSource="{Binding SelectedNode.Fields}" />
-      </ScrollViewer>
+      <TabControl Grid.Column="2">
+        <TabItem Header="State">
+          <!-- todo: move to own control -->
+          <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding SelectedNode.Fields}" />
+          </ScrollViewer>
+        </TabItem>
+        <TabItem Header="Events">
+          <TextBlock>Will implement soon!</TextBlock>
+          <!--
+          <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding ActiveDocument.Events}" />
+          </ScrollViewer>
+          -->
+        </TabItem>
+        <TabItem Header="Variables">
+          <TextBlock>Will implement soon!</TextBlock>
+          <!--
+          <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding ActiveDocument.Variables}" />
+          </ScrollViewer>
+          -->
+        </TabItem>
+      </TabControl>
     </Grid>
   </Grid>
 </Window>
