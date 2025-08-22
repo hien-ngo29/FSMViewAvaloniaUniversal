@@ -219,20 +219,26 @@ public class FsmPlaymaker : IFsmMonoBehaviour
 
     private static FsmDocumentNodeFieldValue ConvertObjectToNodeFieldValue(object obj, bool inArray)
     {
+        string valueName;
+        if (obj is NamedVariable nv)
+            valueName = nv.Name;
+        else
+            valueName = string.Empty;
+
         var indent = inArray ? 1 : 0;
 
         if (obj is int objInt)
-            return new FsmDocumentNodeFieldIntegerValue(objInt, indent);
+            return new FsmDocumentNodeFieldIntegerValue(objInt, valueName, indent);
         else if (obj is float objFloat)
-            return new FsmDocumentNodeFieldFloatValue(objFloat, indent);
+            return new FsmDocumentNodeFieldFloatValue(objFloat, valueName, indent);
         else if (obj is bool objBool)
-            return new FsmDocumentNodeFieldBooleanValue(objBool, indent);
+            return new FsmDocumentNodeFieldBooleanValue(objBool, valueName, indent);
         else if (obj is string objString)
-            return new FsmDocumentNodeFieldStringValue(objString, indent);
+            return new FsmDocumentNodeFieldStringValue(objString, valueName, indent);
         else if (obj is FsmArrayInfo objArrayInf)
-            return new FsmDocumentNodeFieldArrayValue(objArrayInf.TypeName, objArrayInf.Elements.Length, indent);
+            return new FsmDocumentNodeFieldArrayValue(objArrayInf.TypeName, valueName, objArrayInf.Elements.Length, indent);
         else if (obj is IFsmPlaymakerValuePreviewer objHandler)
-            return new FsmPlaymakerValue(objHandler, indent);
+            return new FsmPlaymakerValue(objHandler, valueName, indent);
         else
             return new FsmDocumentNodeFieldFallbackValue(obj, indent);
 

@@ -1,41 +1,41 @@
 ﻿namespace FSMExpress.Common.Document;
-public class FsmDocumentNodeFieldBooleanValue(bool value, int indent = 0) : FsmDocumentNodeFieldValue
+public class FsmDocumentNodeFieldBooleanValue(bool value, string name, int indent = 0) : FsmDocumentNodeFieldValue
 {
     public override int DisplayIndent => indent;
     public override string DisplayType => "bool";
-    public override string DisplayString => value ? "true" : "false";
+    public override string DisplayString => value ? "true" : "false" + GetNameString(name);
     public override FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Boolean;
 }
 
-public class FsmDocumentNodeFieldIntegerValue(int value, int indent = 0) : FsmDocumentNodeFieldValue
+public class FsmDocumentNodeFieldIntegerValue(int value, string name, int indent = 0) : FsmDocumentNodeFieldValue
 {
     public override int DisplayIndent => indent;
     public override string DisplayType => "int";
-    public override string DisplayString => value.ToString();
+    public override string DisplayString => value.ToString() + GetNameString(name);
     public override FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Integer;
 }
 
-public class FsmDocumentNodeFieldFloatValue(float value, int indent = 0) : FsmDocumentNodeFieldValue
+public class FsmDocumentNodeFieldFloatValue(float value, string name, int indent = 0) : FsmDocumentNodeFieldValue
 {
     public override int DisplayIndent => indent;
     public override string DisplayType => "float";
-    public override string DisplayString => value.ToString() + "f";
+    public override string DisplayString => value.ToString() + "f" + GetNameString(name);
     public override FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Float;
 }
 
-public class FsmDocumentNodeFieldStringValue(string value, int indent = 0) : FsmDocumentNodeFieldValue
+public class FsmDocumentNodeFieldStringValue(string value, string name, int indent = 0) : FsmDocumentNodeFieldValue
 {
     public override int DisplayIndent => indent;
     public override string DisplayType => "string";
-    public override string DisplayString => $"\"{value}\"";
+    public override string DisplayString => $"\"{value}\"" + GetNameString(name);
     public override FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.String;
 }
 
-public class FsmDocumentNodeFieldArrayValue(string typeName, int count, int indent = 0) : FsmDocumentNodeFieldValue
+public class FsmDocumentNodeFieldArrayValue(string typeName, string name, int count, int indent = 0) : FsmDocumentNodeFieldValue
 {
     public override int DisplayIndent => indent;
     public override string DisplayType => typeName + "[]";
-    public override string DisplayString => $"[{count} length]";
+    public override string DisplayString => $"[{count} length]" + GetNameString(name);
     public override FsmDocumentNodeDataFieldKind FieldKind => FsmDocumentNodeDataFieldKind.Array;
 }
 
@@ -69,6 +69,16 @@ public abstract class FsmDocumentNodeFieldValue
     abstract public string DisplayType { get; }
     abstract public string DisplayString { get; }
     abstract public FsmDocumentNodeDataFieldKind FieldKind { get; }
+
+    public static string GetNameString(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return string.Empty;
+        }
+
+        return $" ({name})";
+    }
 }
 
 public enum FsmDocumentNodeDataFieldKind

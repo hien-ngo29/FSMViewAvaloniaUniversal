@@ -1,7 +1,7 @@
 ﻿using FSMExpress.Common.Document;
 
 namespace FSMExpress.PlayMaker;
-public class FsmPlaymakerValue(IFsmPlaymakerValuePreviewer value, int indent) : FsmDocumentNodeFieldValue
+public class FsmPlaymakerValue(IFsmPlaymakerValuePreviewer value, string name, int indent) : FsmDocumentNodeFieldValue
 {
     public override int DisplayIndent => indent;
     public override string DisplayType => value.GetType().Name;
@@ -15,8 +15,8 @@ public class FsmPlaymakerValue(IFsmPlaymakerValuePreviewer value, int indent) : 
 
             return FieldKind switch
             {
-                FsmDocumentNodeDataFieldKind.Float => baseStr + "f",
-                FsmDocumentNodeDataFieldKind.String => "\"" + baseStr + "\"",
+                FsmDocumentNodeDataFieldKind.Float => baseStr + "f" + GetNameString(name),
+                FsmDocumentNodeDataFieldKind.String => "\"" + baseStr + "\"" + GetNameString(name),
                 _ => baseStr
             };
         }
