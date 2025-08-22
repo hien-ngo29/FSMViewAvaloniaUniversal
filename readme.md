@@ -1,6 +1,6 @@
 Rewrite of FSMViewAvalonia. Should work on any FSM game.
 
-!(FSMExpress)[screenshot.png]
+![FSMExpress](screenshot.png)
 
 Downloads:
 
