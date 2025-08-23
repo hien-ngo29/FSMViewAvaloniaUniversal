@@ -55,6 +55,9 @@ public partial class FsmSelectorViewModel : ViewModelBase, IDialogAware<FsmSelec
             Entries.AddRange(_internalEntries);
         else
             Entries.AddRange(_internalEntries.Where(e => e.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+
+        if (Entries.Count > 0)
+            SelectedEntry = Entries[0];
     }
 
     public async Task FillFsmEntries()
@@ -133,7 +136,7 @@ public partial class FsmSelectorViewModel : ViewModelBase, IDialogAware<FsmSelec
         return $"{goName} - {fsmName}";
     }
 
-    public void ListBoxItem_DoubleTapped()
+    public void PickSelectedEntry()
     {
         if (SelectedEntry is not null)
         {
@@ -141,12 +144,7 @@ public partial class FsmSelectorViewModel : ViewModelBase, IDialogAware<FsmSelec
         }
     }
 
-    public void BtnOk_Click()
-    {
-        RequestClose?.Invoke(SelectedEntry);
-    }
-
-    public void BtnCancel_Click()
+    public void PickCancel()
     {
         RequestClose?.Invoke(null);
     }

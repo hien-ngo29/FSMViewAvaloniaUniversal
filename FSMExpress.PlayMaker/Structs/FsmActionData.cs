@@ -6,8 +6,8 @@ public class FsmActionData
 {
     public List<string> ActionNames { get; set; }
     public List<string> CustomNames { get; set; }
-    public List<bool> ActionEnabled { get; set; }
-    public List<bool> ActionIsOpen { get; set; }
+    public List<byte> ActionEnabled { get; set; }
+    public List<byte> ActionIsOpen { get; set; }
     public List<int> ActionStartIndex { get; set; }
     public List<int> ActionHashCodes { get; set; }
     public List<NamedAssetPPtr> UnityObjectParams { get; set; }
@@ -89,8 +89,8 @@ public class FsmActionData
     {
         ActionNames = field.GetValue<List<string>>("actionNames");
         CustomNames = field.GetValue<List<string>>("customNames");
-        ActionEnabled = field.GetValue<List<bool>>("actionEnabled");
-        ActionIsOpen = field.GetValue<List<bool>>("actionIsOpen");
+        ActionEnabled = field.GetValue<List<byte>>("actionEnabled");
+        ActionIsOpen = field.GetValue<List<byte>>("actionIsOpen");
         ActionStartIndex = field.GetValue<List<int>>("actionStartIndex");
         ActionHashCodes = field.GetValue<List<int>>("actionHashCodes");
         UnityObjectParams = field.GetValue<List<NamedAssetPPtr>>("unityObjectParams");

@@ -17,7 +17,7 @@ public class FsmPlaymakerValue(IFsmPlaymakerValuePreviewer value, string name, i
             {
                 FsmDocumentNodeDataFieldKind.Float => baseStr + "f" + GetNameString(name),
                 FsmDocumentNodeDataFieldKind.String => "\"" + baseStr + "\"" + GetNameString(name),
-                _ => baseStr
+                _ => baseStr + GetNameString(name)
             };
         }
     }

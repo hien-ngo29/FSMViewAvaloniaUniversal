@@ -20,6 +20,7 @@
   
   <Window.Resources>
     <sid:TypeColorConverter x:Key="TypeColorConverter"/>
+    <sid:BoolObjectConverter x:Key="BoolObjectConverter"/>
   </Window.Resources>
 
   <!-- this all needs to move with the ItemsControl sidebar -->
@@ -27,11 +28,18 @@
     <DataTemplate DataType="{x:Type fcd:FsmDocumentNodeClassField}">
       <TextBlock
         Text="{Binding TypeRef.ClassName}"
-        Background="{StaticResource ThemeControlLowBrush}"
         HorizontalAlignment="Stretch"
         FontWeight="Bold"
         Padding="5"
-        Height="28" />
+        Height="28">
+        <TextBlock.Background>
+          <MultiBinding Converter="{StaticResource BoolObjectConverter}">
+            <Binding Path="IsEnabled" />
+            <DynamicResource ResourceKey="ListHeaderNormal" />
+            <DynamicResource ResourceKey="ListHeaderDisabled" />
+          </MultiBinding>
+        </TextBlock.Background>
+      </TextBlock>
     </DataTemplate>
     
     <!-- SelectableTextBlock must have Background for hit testing -->
@@ -117,16 +125,22 @@
   
   <Grid RowDefinitions="21,*">
     <Menu Grid.Row="0">
-      <MenuItem Header="File">
-        <MenuItem Header="Open" Command="{Binding FileOpen}" />
-        <MenuItem Header="Open scene list" Command="{Binding FileOpenSceneList}" />
-        <MenuItem Header="Open resources.assets" Command="{Binding FileOpenResourcesAssets}" />
+      <MenuItem Header="_File">
         <MenuItem
-          Header="Open last"
+          Header="_Open" Command="{Binding FileOpen}"
+          HotKey="Ctrl+O" InputGesture="Ctrl+O" />
+        <MenuItem
+          Header="Open _scene list" Command="{Binding FileOpenSceneList}"
+          HotKey="Ctrl+E" InputGesture="Ctrl+E" />
+        <MenuItem
+          Header="Open _resources.assets" Command="{Binding FileOpenResourcesAssets}"
+          HotKey="Ctrl+R" InputGesture="Ctrl+R" />
+        <MenuItem
+          Header="Open _last" Command="{Binding FileOpenLast}"
           IsEnabled="{Binding LastOpenedPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-          Command="{Binding FileOpenLast}" />
+          HotKey="Ctrl+T" InputGesture="Ctrl+T" />
       </MenuItem>
-      <MenuItem Header="Config">
+      <MenuItem Header="_Config">
         <MenuItem
           Header="{Binding Source={x:Static cnf:ConfigurationManager.Settings}, Path=DefaultGamePath,
                    StringFormat='Set game path (Current path is {0})',
@@ -134,13 +148,11 @@
           Command="{Binding ConfigSetGamePath}" />
       </MenuItem>
       <MenuItem
-        Header="Close tab"
-        Command="{Binding CloseTab}"
-        IsEnabled="{Binding !!Documents.Count}" />
+        Header="Close tab" Command="{Binding CloseTab}"
+        IsEnabled="{Binding !!Documents.Count}" HotKey="Ctrl+W" />
       <MenuItem
-        Header="Close all tabs"
-        Command="{Binding CloseAllTabs}"
-        IsEnabled="{Binding !!Documents.Count}" />
+        Header="Close all tabs" Command="{Binding CloseAllTabs}"
+        IsEnabled="{Binding !!Documents.Count}" HotKey="Ctrl+Shift+W" />
     </Menu>
     
     <Grid Grid.Row="1" ColumnDefinitions="*,4,300">

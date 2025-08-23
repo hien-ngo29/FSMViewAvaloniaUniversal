@@ -23,6 +23,8 @@ public class FsmEvent
 
     public override string ToString()
     {
-        return $"[Name = {Name}, IsSystemEvent = {IsSystemEvent}, IsGlobal = {IsGlobal}]";
+        return Name is not null
+            ? Name
+            : "[No Event]";
     }
 }

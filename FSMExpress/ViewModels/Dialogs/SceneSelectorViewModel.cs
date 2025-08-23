@@ -50,7 +50,13 @@ public partial class SceneSelectorViewModel : ViewModelBase, IDialogAware<SceneS
         if (searchText == string.Empty)
             Entries.AddRange(_internalEntries);
         else
-            Entries.AddRange(_internalEntries.Where(e => e.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase)));
+            Entries.AddRange(_internalEntries.Where(e =>
+                e.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                e.FileName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            ));
+
+        if (Entries.Count > 0)
+            SelectedEntry = Entries[0];
     }
 
     public async Task FillSceneEntries()
@@ -76,7 +82,7 @@ public partial class SceneSelectorViewModel : ViewModelBase, IDialogAware<SceneS
         FilterEntries(string.Empty);
     }
 
-    public void ListBoxItem_DoubleTapped()
+    public void PickSelectedEntry()
     {
         if (SelectedEntry is not null)
         {
@@ -84,12 +90,7 @@ public partial class SceneSelectorViewModel : ViewModelBase, IDialogAware<SceneS
         }
     }
 
-    public void BtnOk_Click()
-    {
-        RequestClose?.Invoke(SelectedEntry);
-    }
-
-    public void BtnCancel_Click()
+    public void PickCancel()
     {
         RequestClose?.Invoke(null);
     }

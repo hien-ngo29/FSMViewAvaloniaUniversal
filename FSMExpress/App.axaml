@@ -13,6 +13,7 @@
       <SimpleTheme />
       <StyleInclude Source="/Theming/SolidMenuItemStyle.axaml" />
       <StyleInclude Source="/Theming/CodeColors.axaml" />
+      <StyleInclude Source="/Theming/ListColors.axaml" />
       <StyleInclude Source="/Theming/TabStyle.axaml" />
     </Application.Styles>
 </Application>

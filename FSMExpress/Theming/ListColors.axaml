@@ -1,0 +1,26 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <StackPanel>
+        <Label Width="200" Foreground="#fff" Background="{DynamicResource ListHeaderNormal}">Normal</Label>
+        <Label Width="200" Foreground="#fff" Background="{DynamicResource ListHeaderDisabled}">Disabled</Label>
+      </StackPanel>
+    </Border>
+  </Design.PreviewWith>
+  <Styles.Resources>
+    <ResourceDictionary>
+      <!-- use TypeTextTheme for multibindings -->
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="ListHeaderNormal">#6b8ec7</SolidColorBrush>
+          <SolidColorBrush x:Key="ListHeaderDisabled">#f02222</SolidColorBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="ListHeaderNormal">#6b8ec7</SolidColorBrush>
+          <SolidColorBrush x:Key="ListHeaderDisabled">#f02222</SolidColorBrush>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+</Styles>

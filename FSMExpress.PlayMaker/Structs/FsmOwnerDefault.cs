@@ -26,7 +26,7 @@ public class FsmOwnerDefault : IFsmPlaymakerValuePreviewer
     public override string ToString()
     {
         return OwnerOption == OwnerDefaultOption.UseOwner
-            ? "[UseOwner]"
+            ? "[Owner]"
             : GameObject?.ToString() ?? string.Empty;
     }
 }

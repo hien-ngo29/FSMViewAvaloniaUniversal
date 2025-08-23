@@ -1,6 +1,7 @@
 ﻿using FSMExpress.Common.Assets;
 using FSMExpress.Common.Document;
 using FSMExpress.Common.Interfaces;
+using System.Text;
 
 namespace FSMExpress.PlayMaker.Structs;
 public class FsmEventTarget : IFsmPlaymakerValuePreviewer
@@ -36,6 +37,21 @@ public class FsmEventTarget : IFsmPlaymakerValuePreviewer
 
     public override string ToString()
     {
-        return $"[Target = {Target}, ExcludeSelf = {ExcludeSelf}, GameObject = {GameObject}, FsmName = {FsmName}, SendToChildren = {SendToChildren}, FsmComponent = {FsmComponent}]";
+        var flags = new StringBuilder();
+
+        if (ExcludeSelf.Value)
+            flags.Append("ExcludeSelf,");
+
+        if (SendToChildren.Value)
+            flags.Append("SendToChildren,");
+
+        if (!string.IsNullOrEmpty(FsmName.Value))
+            flags.Append($"SendToFSM: {FsmName.Value},");
+
+        var flagsStr = flags.ToString();
+        if (flagsStr.Length > 0)
+            flagsStr = $"[{flagsStr[..^1]}]";
+
+        return $"EventTarget({Target}){flagsStr}:{GameObject}";
     }
 }

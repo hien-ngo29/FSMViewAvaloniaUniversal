@@ -88,8 +88,9 @@ public class FsmPlaymaker : IFsmMonoBehaviour
             for (var actionIdx = 0; actionIdx < stateActionData.ActionNames.Count; actionIdx++)
             {
                 var actionName = TrimFullNameToClassName(stateActionData.ActionNames[actionIdx]);
+                var actionEnabled = stateActionData.ActionEnabled[actionIdx] != 0;
 
-                docNode.Fields.Add(new FsmDocumentNodeClassField(new AssetTypeReference(actionName, "Namespace", "AssemblyName"), true));
+                docNode.Fields.Add(new FsmDocumentNodeClassField(new AssetTypeReference(actionName, "Namespace", "AssemblyName"), actionEnabled));
                 ConvertActionData(docNode.Fields, stateActionData, actionIdx);
             }
         }
@@ -468,6 +469,8 @@ public class FsmPlaymaker : IFsmMonoBehaviour
             ParamDataType.FunctionCall => actionData.FunctionCallParams[paramDataPos],
             ParamDataType.Array => ConvertActionDataArray(actionData, ref paramIdx),
             ParamDataType.FsmProperty => actionData.FsmPropertyParams[paramDataPos],
+            ParamDataType.FsmMaterial => new FsmMaterial(actionData.FsmObjectParams[paramDataPos]),
+            ParamDataType.FsmTexture => new FsmTexture(actionData.FsmObjectParams[paramDataPos]),
             _ => $"[{paramDataType} not implemented]",
         };
 
