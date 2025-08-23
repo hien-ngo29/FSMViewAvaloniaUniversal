@@ -1,13 +1,13 @@
 ﻿using FSMExpress.Common.Interfaces;
 
 namespace FSMExpress.PlayMaker.Structs;
-public class FsmGameObject : FsmObject, IFsmPlaymakerValuePreviewer
+public class FsmTexture : FsmObject, IFsmPlaymakerValuePreviewer
 {
-    public FsmGameObject()
+    public FsmTexture()
     {
     }
 
-    public FsmGameObject(IAssetField field) : base(field)
+    public FsmTexture(IAssetField field) : base(field)
     {
     }
 

@@ -33,6 +33,7 @@
         Padding="5"
         Height="28" />
     </DataTemplate>
+    
     <!-- SelectableTextBlock must have Background for hit testing -->
     <DataTemplate DataType="{x:Type fcd:FsmDocumentNodeDataField}">
       <Grid ColumnDefinitions="4*,5*">
@@ -91,9 +92,30 @@
         </Border>-->
       </Grid>
     </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type fcd:FsmDocumentEvent}">
+      <Grid ColumnDefinitions="*,50,50">
+        <SelectableTextBlock
+          HorizontalAlignment="Stretch"
+          Background="{DynamicResource ThemeBackgroundBrush}"
+          Text="{Binding Name}" Padding="5" Height="28"
+          Grid.Column="0">
+        </SelectableTextBlock>
+        <CheckBox
+          Content="G"
+          IsChecked="{Binding IsGlobal}"
+          IsEnabled="False"
+          Grid.Column="1" />
+        <CheckBox
+          Content="S"
+          IsChecked="{Binding IsSystem}"
+          IsEnabled="False"
+          Grid.Column="2" />
+      </Grid>
+    </DataTemplate>
   </Window.DataTemplates>
   
-  <Grid RowDefinitions="21,21,*">
+  <Grid RowDefinitions="21,*">
     <Menu Grid.Row="0">
       <MenuItem Header="File">
         <MenuItem Header="Open" Command="{Binding FileOpen}" />
@@ -120,22 +142,35 @@
         Command="{Binding CloseAllTabs}"
         IsEnabled="{Binding !!Documents.Count}" />
     </Menu>
-    <TabControl
-      Grid.Row="1"
-      ItemsSource="{Binding Documents}"
-      SelectedItem="{Binding ActiveDocument}">
-      <TabControl.ItemTemplate>
-        <DataTemplate>
-          <TextBlock Text="{Binding Name}" />
-        </DataTemplate>
-      </TabControl.ItemTemplate>
-    </TabControl>
-    <Grid Grid.Row="2" ColumnDefinitions="*,4,300">
-      <can:FsmCanvasControl
-        Document="{Binding ActiveDocument}"
-        SelectedNode="{Binding SelectedNode, Mode=TwoWay}"
-        Grid.Column="0" />
+    
+    <Grid Grid.Row="1" ColumnDefinitions="*,4,300">
+      
+      <Grid Grid.Column="0" RowDefinitions="30,*">
+        <TabControl
+          Grid.Row="0"
+          ItemsSource="{Binding Documents}"
+          SelectedItem="{Binding ActiveDocument}">
+          <TabControl.ItemTemplate>
+            <DataTemplate>
+              <TextBlock>
+                <TextBlock.Text>
+                  <MultiBinding StringFormat="{}{0}&#x0a;{1}">
+                    <Binding Path="Name" />
+                    <Binding Path="SourceName" />
+                  </MultiBinding>
+                </TextBlock.Text>
+              </TextBlock>
+            </DataTemplate>
+          </TabControl.ItemTemplate>
+        </TabControl>
+        <can:FsmCanvasControl
+          Grid.Row="1"
+          Document="{Binding ActiveDocument}"
+          SelectedNode="{Binding SelectedNode, Mode=TwoWay}" />
+      </Grid>
+      
       <GridSplitter Grid.Column="1" />
+      
       <TabControl Grid.Column="2">
         <TabItem Header="State">
           <!-- todo: move to own control -->
@@ -144,22 +179,17 @@
           </ScrollViewer>
         </TabItem>
         <TabItem Header="Events">
-          <TextBlock>Will implement soon!</TextBlock>
-          <!--
           <ScrollViewer>
             <ItemsControl ItemsSource="{Binding ActiveDocument.Events}" />
           </ScrollViewer>
-          -->
         </TabItem>
         <TabItem Header="Variables">
-          <TextBlock>Will implement soon!</TextBlock>
-          <!--
           <ScrollViewer>
             <ItemsControl ItemsSource="{Binding ActiveDocument.Variables}" />
           </ScrollViewer>
-          -->
         </TabItem>
       </TabControl>
     </Grid>
+    
   </Grid>
 </Window>

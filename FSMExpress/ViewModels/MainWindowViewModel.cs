@@ -92,6 +92,12 @@ public partial class MainWindowViewModel : ViewModelBase
         var fsmFileInst = fsmExt.file;
 
         var fsmObject = new FsmPlaymaker(new AfAssetField(fsmBaseField["fsm"], new AfAssetNamer(_manager, fsmFileInst)));
+
+        // get gameobject name
+        var namer = new AfAssetNamer(_manager, fsmFileInst);
+        var goPtr = fsmBaseField["m_GameObject"];
+        fsmObject.GoName = namer.GetName(goPtr["m_FileID"].AsInt, goPtr["m_PathID"].AsLong) ?? "<Unknown GO>";
+
         var fsmDoc = fsmObject.MakeDocument();
         Documents.Add(fsmDoc);
         ActiveDocument = fsmDoc;

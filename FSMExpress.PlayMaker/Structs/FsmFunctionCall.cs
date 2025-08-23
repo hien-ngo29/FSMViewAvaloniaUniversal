@@ -81,9 +81,38 @@ public class FsmFunctionCall : IFsmPlaymakerValuePreviewer
             case "Array":
                 ArrayParameter = new FsmArray(field.GetField("ArrayParameter"));
                 break;
+            case "None":
             default:
                 // do nothing since we can't handle it
                 break;
         }
+    }
+
+    public override string ToString()
+    {
+        object? value = ParameterType switch
+        {
+            "bool" => BoolParameter,
+            "float" => FloatParameter,
+            "int" => IntParameter,
+            "GameObject" => GameObjectParameter,
+            "Object" => ObjectParameter,
+            "string" => StringParameter,
+            "Vector2" => Vector2Parameter,
+            "Vector3" => Vector3Parameter,
+            "Rect" => RectParamater,
+            "Quaternion" => QuaternionParameter,
+            "Material" => MaterialParameter,
+            "Texture" => TextureParameter,
+            "Color" => ColorParameter,
+            "Enum" => EnumParameter,
+            "Array" => ArrayParameter,
+            "None" => null,
+            _ => "???"
+        };
+
+        return value is not null
+            ? $"{FunctionName}({value})"
+            : $"{FunctionName}()";
     }
 }
