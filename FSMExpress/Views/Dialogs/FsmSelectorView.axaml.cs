@@ -30,7 +30,7 @@ public partial class FsmSelectorView : UserControl
         else if (e.Key == Key.Escape)
         {
             e.Handled = true;
-            if (DataContext is SceneSelectorViewModel vm)
+            if (DataContext is FsmSelectorViewModel vm)
             {
                 vm.PickCancel();
             }
